@@ -74,8 +74,8 @@ a { color: var(--accent); }
     </section>
 
     <section class="card">
-      <h2>Import CSV</h2>
-      <p class="sub">Columns (header row required, any order): <code>date, sku, variation, type, qty, unit_price, customer, note, order_ref</code>.<br>
+      <h2>Upload sales &amp; stock (CSV or Excel)</h2>
+      <p class="sub">Excel (.xlsx, first sheet) or CSV. Columns (header row required, any order): <code>date, sku, variation, type, qty, unit_price, customer, note, order_ref</code>.<br>
         <code>date</code> YYYY-MM-DD or DD/MM/YYYY · <code>sku</code> U01 or U02 · <code>variation</code> e.g. FG1 (can be blank when the product has only one) ·
         <code>type</code> sale, receipt, adjustment or transfer · <code>qty</code> whole pieces (sale/receipt positive; adjustment/transfer signed, e.g. −20) ·
         <code>unit_price</code> GHS per piece for sales (blank = retail price) · <code>order_ref</code> groups lines into one order for discount tiers.
@@ -85,10 +85,11 @@ a { color: var(--accent); }
 2026-10-01,U02,FG7,sale,500,4.75,Kofi Auto Parts,,INV-101
 2026-10-02,U01,FG6,adjustment,-3,,,damaged,</pre>
       <div class="row">
-        <label for="csvFile">CSV file <input id="csvFile" type="file" accept=".csv,text/csv"></label>
+        <label for="csvFile">File <input id="csvFile" type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></label>
         <label for="csvLabel">Label <input id="csvLabel" placeholder="e.g. October sales"></label>
         <button type="button" id="csvCheck">Check file</button>
         <button type="button" class="primary" id="csvImport" disabled>Import</button>
+        <button type="button" id="csvTemplate">Download template</button>
       </div>
       <div class="msg" id="csvMsg"></div>
     </section>
@@ -166,7 +167,7 @@ const ghs = p => 'GHS ' + (p / 100).toLocaleString('en-GH', {minimumFractionDigi
 const num = n => Number(n).toLocaleString('en-GH');
 try { const t = localStorage.getItem('wiper_theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
 let token = ''; try { token = sessionStorage.getItem('wiper_token') || ''; } catch (e) {}
-let cat = null, csvText = '';
+let cat = null;
 
 async function api(action, body) {
   const r = await fetch('api.php?action=' + action, {method: body === undefined ? 'GET' : 'POST', headers: {'Content-Type': 'application/json', 'X-Session': token}, body: body === undefined ? undefined : JSON.stringify(body)});
@@ -223,10 +224,25 @@ async function loadSeed() {
 }
 
 // ---- CSV import ----
-$('csvFile').onchange = async () => { csvText = $('csvFile').files[0] ? await $('csvFile').files[0].text() : ''; $('csvImport').disabled = true; $('csvMsg').textContent = ''; };
+let upload = null;
+$('csvFile').onchange = async () => {
+  const f = $('csvFile').files[0]; upload = null; $('csvImport').disabled = true; $('csvMsg').textContent = '';
+  if (!f) return;
+  if (/\.xlsx$/i.test(f.name)) {
+    const bytes = new Uint8Array(await f.arrayBuffer()); let bin = '';
+    for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    upload = {xlsx: btoa(bin)};
+  } else if (/\.xls$/i.test(f.name)) {
+    msg('csvMsg', 'Old .xls files are not supported. In Excel use File → Save As → Excel Workbook (.xlsx) or CSV.');
+  } else upload = {csv: await f.text()};
+};
+$('csvTemplate').onclick = () => {
+  const csv = 'date,sku,variation,type,qty,unit_price,customer,note,order_ref\n2026-10-01,U01,FG5,sale,100,14,Kofi Auto Parts,,INV-101\n2026-10-01,U02,FG7,sale,500,4.75,Kofi Auto Parts,,INV-101\n2026-10-02,U01,FG6,adjustment,-3,,,damaged,\n2026-10-03,U02,FG7,receipt,1000,,,new delivery,\n';
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], {type: 'text/csv'})); a.download = 'wiper-upload-template.csv'; a.click();
+};
 async function runImport(dry) {
-  if (!csvText) return msg('csvMsg', 'Choose a CSV file first.');
-  const j = await api('import', {csv: csvText, label: $('csvLabel').value || ($('csvFile').files[0] || {}).name, dry_run: dry});
+  if (!upload) return msg('csvMsg', 'Choose a CSV or .xlsx file first.');
+  const j = await api('import', {...upload, label: $('csvLabel').value || ($('csvFile').files[0] || {}).name, dry_run: dry});
   if (!j.ok) {
     $('csvImport').disabled = true;
     msg('csvMsg', j.error);
@@ -236,7 +252,7 @@ async function runImport(dry) {
   const s = j.summary;
   msg('csvMsg', `${dry ? 'File OK' : 'Imported'}: ${num(s.rows)} rows, ${s.from} to ${s.to}, ${num(s.sales_pieces)} pieces sold, revenue ${ghs(s.revenue_pesewas)}.` + (dry ? ' Press Import to save.' : ''), true);
   $('csvImport').disabled = !dry;
-  if (!dry) { csvText = ''; $('csvFile').value = ''; loadBatches(); loadRecent(); }
+  if (!dry) { upload = null; $('csvFile').value = ''; loadBatches(); loadRecent(); }
 }
 $('csvCheck').onclick = () => runImport(true);
 $('csvImport').onclick = () => runImport(false);

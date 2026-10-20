@@ -2,12 +2,13 @@
 // wiper.chou.net API.
 // Public (no login, read-only): health, report.
 // Admin (X-Session token from login): status, setup, login, logout, catalog, seed_preview, seed_load,
-//   import (CSV, all-or-nothing, dry_run supported), add_movement, void_movement, batches, undo_batch,
+//   import (CSV or .xlsx, all-or-nothing, dry_run supported), add_movement, void_movement, batches, undo_batch,
 //   save_variation, save_tiers.
 // Quantities are pieces. Sales are stored as negative qty with a positive amount_pesewas.
 
 declare(strict_types=1);
 require __DIR__ . '/lib/db.php';
+require __DIR__ . '/lib/xlsx.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('X-Robots-Tag: noindex, nofollow');
@@ -230,20 +231,38 @@ function undo_batch(array $in): never {
     touch_data(); out(['ok' => true]);
 }
 
-// CSV columns: date, sku, variation, type, qty, unit_price, customer, note, order_ref (header row required, any order).
-function import_csv(array $in): never {
+// Upload columns: date, sku, variation, type, qty, unit_price, customer, note, order_ref (header row required, any order).
+// Body: {csv: "<text>"} or {xlsx: "<base64 of an .xlsx file>"} (first sheet is read), plus label, dry_run.
+function upload_records(array $in): array {
+    if (!empty($in['xlsx'])) {
+        $bytes = base64_decode((string)$in['xlsx'], true);
+        if ($bytes === false) fail('Could not read the Excel file.');
+        if (strlen($bytes) > 5_000_000) fail('File too large (max 5 MB).');
+        try { $recs = xlsx_rows($bytes); } catch (RuntimeException $e) { fail($e->getMessage()); }
+        return $recs;
+    }
     $csv = (string)($in['csv'] ?? '');
     if (trim($csv) === '') fail('The file is empty.');
     if (strlen($csv) > 5_000_000) fail('File too large (max 5 MB).');
     $csv = preg_replace('/^\xEF\xBB\xBF/', '', $csv);
     $fh = fopen('php://temp', 'r+'); fwrite($fh, $csv); rewind($fh);
-    $header = fgetcsv($fh, null, ',', '"', '');
+    $recs = [];
+    while (($rec = fgetcsv($fh, null, ',', '"', '')) !== false) $recs[] = $rec;
+    fclose($fh);
+    return $recs;
+}
+function import_csv(array $in): never {
+    $recs = upload_records($in);
+    // Skip blank rows above the header.
+    $skipped = 0;
+    while ($recs && count(array_filter($recs[0], fn($c) => trim((string)$c) !== '')) === 0) { array_shift($recs); $skipped++; }
+    $header = array_shift($recs);
     if (!$header) fail('Missing header row.');
     $cols = array_map(fn($h) => strtolower(trim(str_replace(' ', '_', (string)$h))), $header);
     foreach (['date', 'sku', 'type', 'qty'] as $req) if (!in_array($req, $cols, true)) fail("Missing column \"{$req}\". Expected: date, sku, variation, type, qty, unit_price, customer, note, order_ref.");
     [$byCode, $bySku] = lookup();
-    $rows = []; $errors = []; $line = 1;
-    while (($rec = fgetcsv($fh, null, ',', '"', '')) !== false) {
+    $rows = []; $errors = []; $line = $skipped + 1; // spreadsheet row number of the header
+    foreach ($recs as $rec) {
         $line++;
         if (count(array_filter($rec, fn($c) => trim((string)$c) !== '')) === 0) continue;
         $r = [];
@@ -252,7 +271,6 @@ function import_csv(array $in): never {
         if ($err) { $errors[] = ['line' => $line, 'error' => $err]; if (count($errors) >= 200) break; }
         else $rows[] = $row;
     }
-    fclose($fh);
     if ($errors) fail('Nothing was imported. Fix these rows and try again.', 422, ['errors' => $errors]);
     if (!$rows) fail('No data rows found.');
     $summary = ['rows' => count($rows),
@@ -261,7 +279,7 @@ function import_csv(array $in): never {
         'from' => min(array_column($rows, 'date')), 'to' => max(array_column($rows, 'date'))];
     if (!empty($in['dry_run'])) out(['ok' => true, 'dry_run' => true, 'summary' => $summary]);
     $pdo = db(); $pdo->beginTransaction();
-    $label = mb_substr(trim((string)($in['label'] ?? 'CSV import')), 0, 120);
+    $label = mb_substr(trim((string)($in['label'] ?? 'Upload')), 0, 120);
     $pdo->prepare('INSERT INTO batches (kind, label, rows, created_at) VALUES (?,?,?,?)')->execute(['import', $label, count($rows), now()]);
     $batch = (int)$pdo->lastInsertId();
     insert_movements($rows, 'import', $batch);

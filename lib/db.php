@@ -138,9 +138,12 @@ function to_pesewas($v): ?int {
     $p = (int)$i * 100 + (int)str_pad($f, 2, '0');
     return $neg ? -$p : $p;
 }
-// YYYY-MM-DD or DD/MM/YYYY (day first, as used in Ghana) -> YYYY-MM-DD; null when invalid.
+// YYYY-MM-DD, DD/MM/YYYY (day first, as used in Ghana) or an Excel date serial -> YYYY-MM-DD; null when invalid.
 function to_date($v): ?string {
     $s = trim((string)$v);
+    if (preg_match('/^\d{5}(\.\d+)?$/', $s) && (int)$s >= 36526 && (int)$s <= 73051) // Excel serial, 2000-01-01 .. 2099-12-31
+        return gmdate('Y-m-d', ((int)$s - 25569) * 86400);
+    $s = preg_replace('/[ T]\d{1,2}:\d{2}(:\d{2})?$/', '', $s); // drop a time part
     if (preg_match('/^(\d{4})-(\d{1,2})-(\d{1,2})$/', $s, $m)) [$y, $mo, $d] = [(int)$m[1], (int)$m[2], (int)$m[3]];
     elseif (preg_match('#^(\d{1,2})/(\d{1,2})/(\d{4})$#', $s, $m)) [$d, $mo, $y] = [(int)$m[1], (int)$m[2], (int)$m[3]];
     else return null;

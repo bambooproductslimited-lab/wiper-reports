@@ -5,9 +5,10 @@ Public, read-only sales and inventory reports for **U01 Wiper blade** and **U02 
 | Path | What |
 | --- | --- |
 | `index.html` | Report page (public): period/product/variation filters, KPI tiles vs previous period, sales trend (stacked SVG bars, revenue/units, hover tooltips, table view), sales by variation, top customers, sales by discount tier, stock on hand & reorder, stock movement ledger. Every table sorts and exports CSV. Light/dark, phone width. |
-| `admin.html` | Admin (PIN): load opening stock, CSV import (check first, all-or-nothing), record a movement, edit variations, discount tiers, undo imports, void movements. |
+| `admin.html` | Admin (PIN): load opening stock, CSV / Excel upload (check first, all-or-nothing, template download), record a movement, edit variations, discount tiers, undo imports, void movements. |
 | `api.php` | JSON API. Public: `health`, `report`. Admin (`X-Session` token): see header comment. |
 | `lib/db.php` | SQLite store at `data/wiper.sqlite` (gitignored, created at runtime with a deny `.htaccess`), migrations, PIN, sessions, rate limit. |
+| `lib/xlsx.php` | Minimal .xlsx reader (first sheet; needs PHP `zip`, which Hostinger has as far as I know — if not, uploads fall back to CSV with a clear message). |
 | `lib/seed.php` | Opening stock as of 2026-09-28 from the Google Sheet "20260928 Wiper_blades_Inventory" (tab "For OS"). Loaded only when the admin presses the button. |
 
 No build step, no framework, no external scripts. PHP 8.3 with `pdo_sqlite`.
@@ -24,22 +25,21 @@ No build step, no framework, no external scripts. PHP 8.3 with `pdo_sqlite`.
 - **First PIN:** open `/admin.html`, enter the one-time setup code (its sha256 is `SETUP_CODE_SHA256` in `lib/db.php`; the code itself is not in the repo) and choose a 4–8 digit PIN.
 - **Reset a lost PIN:** delete `data/admin_pin.json` in Hostinger File Manager, then set a new PIN with the setup code. If the setup code is lost too, generate a new one and replace the hash in `lib/db.php`.
 
-## CSV import
-Header row required, any column order:
+## Uploading data (CSV or Excel)
+Data comes in only by upload or manual entry on the admin page; there is no link to another system. Upload an Excel workbook (.xlsx — the first sheet is read; old .xls must be re-saved as .xlsx) or a CSV. Header row required, any column order, header case and spaces ignored ("Unit Price" = `unit_price`):
 ```
 date,sku,variation,type,qty,unit_price,customer,note,order_ref
 2026-10-01,U01,FG5,sale,100,14,Kofi Auto Parts,,INV-101
 2026-10-02,U01,FG6,adjustment,-3,,,damaged,
 ```
-`date` YYYY-MM-DD or DD/MM/YYYY · `type` sale / receipt / adjustment / transfer · `qty` whole pieces (sale/receipt positive; adjustment/transfer signed) · `unit_price` GHS per piece (blank = retail ÷ pieces per pack). Any bad row rejects the whole file with per-line errors. Each import can be undone from Admin → Imports.
+`date` a real Excel date cell, YYYY-MM-DD or DD/MM/YYYY · `type` sale / receipt / adjustment / transfer · `qty` whole pieces (sale/receipt positive; adjustment/transfer signed) · `unit_price` GHS per piece (blank = retail ÷ pieces per pack). Any bad row rejects the whole file with errors that give the spreadsheet row number. Each import can be undone from Admin → Imports.
 
 ## Hosting / deploy
 - Hostinger account `u344960516`; `chou.net` DNS is in Hostinger. Subdomain `wiper.chou.net` → the folder this repo is deployed into; SSL on.
 - Deploy with Hostinger "Deploy website Git repository": this repo, branch `main`. If the repo is private, add Hostinger's SSH key as a read-only deploy key first.
 
 ## Open questions
-1. Does Bamboo OS have an HTTP API for U01/U02 stock and sales lines? If so, add a server-side sync (credentials in a config file outside the repo). Until then, data comes from CSV imports and manual entry.
-2. Are prices tax-inclusive? Any VAT/NHIL to show?
-3. One stock location (A2) or several?
-4. Should per-pack retail prices or per-piece prices drive revenue? (Imports take a per-piece price.)
-5. The source sheets disagree on opening counts (8,415 vs 8,275 vs 9,159 blades; 19,000 vs 18,100 plugs) and on whether GHS 8 / GHS 2 is cost or selling price. See Admin → Opening stock.
+1. Are prices tax-inclusive? Any VAT/NHIL to show?
+2. One stock location (A2) or several?
+3. Should per-pack retail prices or per-piece prices drive revenue? (Imports take a per-piece price.)
+4. The source sheets disagree on opening counts (8,415 vs 8,275 vs 9,159 blades; 19,000 vs 18,100 plugs) See Admin → Opening stock. (GHS 8 / GHS 2 is cost: the item list's 46% / 58% margins confirm it.)

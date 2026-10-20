@@ -23,6 +23,6 @@ return [
         'Bundles and loose: "For OS" has 37 bundles and 1,490 loose; "B stack" has 30 bundles and 956 loose (+ "A stack" 7 bundles and 534 loose).',
         'Spark plugs: 190 boxes × 100 = 19,000 counted vs 18,100 supplier count (sheet notes 900 extra "to store room").',
         'Wipers: sheet notes 14 blue boxes (140 blades) extra "to store room".',
-        'GHS 8 / GHS 2 is labelled "Cost" on "For OS" but "Selling Price Per Piece" on other tabs; retail prices on "For OS" work out to GHS 14–15 per blade and GHS 4.75 per plug.',
+        'GHS 8 / GHS 2 is labelled "Selling Price Per Piece" on some tabs, but it is the cost: the item list shows 46% (U01) and 58% (U02) margins against retail of GHS 14–15 per blade and GHS 4.75 per plug.',
     ],
 ];
