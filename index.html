@@ -4,178 +4,366 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#1c5cab">
 <title>Wipers & Spark Plugs</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%232a78d6'/><path d='M6 24 L24 8' stroke='white' stroke-width='3' stroke-linecap='round'/><circle cx='24' cy='8' r='3' fill='white'/></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%232a78d6'/><stop offset='1' stop-color='%236250d6'/></linearGradient></defs><rect width='32' height='32' rx='8' fill='url(%23g)'/><path d='M7 23 Q16 6 25 23' stroke='white' stroke-width='2.6' fill='none' stroke-linecap='round'/><path d='M16 23 L22 11' stroke='white' stroke-width='2.6' stroke-linecap='round'/></svg>">
 <style>
 :root {
   color-scheme: light;
-  --bg: #f4f4f2; --surface: #fcfcfb; --surface-2: #f0efec; --border: #e1e0db;
-  --text: #0b0b0b; --text-2: #52514e; --muted: #7a7974; --grid: #e7e6e1;
-  --accent: #2a78d6; --s1: #2a78d6; --s2: #eb6834;
-  --good: #1a7f37; --warn: #b26b00; --bad: #c62828; --warn-bg: #fff4dc; --bad-bg: #fde8e7;
+  --bg: #f4f5f8; --bg-2: #eceef3; --surface: #ffffff; --surface-2: #f3f3f0; --border: rgba(11,11,11,.09);
+  --text: #0b0b0b; --text-2: #52514e; --muted: #7f7d78; --grid: #e7e6e1; --axis: #c3c2b7;
+  --accent: #2a78d6; --accent-2: #6250d6; --s1: #2a78d6; --s2: #eb6834;
+  --good: #0ca30c; --good-text: #006300; --warn: #fab219; --warn-text: #8a5a00; --bad: #d03b3b;
+  --heat-0: #eeeeea; --heat-1: #cde2fb; --heat-2: #9ec5f4; --heat-3: #6da7ec; --heat-4: #3987e5; --heat-5: #1c5cab;
+  --shadow: 0 1px 2px rgba(16,24,40,.04), 0 8px 24px rgba(16,24,40,.06);
+  --hero-a: #1c5cab; --hero-b: #6250d6; --hero-c: #2a78d6;
 }
 @media (prefers-color-scheme: dark) {
   :root:where(:not([data-theme="light"])) {
     color-scheme: dark;
-    --bg: #111110; --surface: #1a1a19; --surface-2: #232321; --border: #33332f;
-    --text: #f0efec; --text-2: #c3c2b7; --muted: #94938a; --grid: #2c2c29;
-    --accent: #3987e5; --s1: #3987e5; --s2: #d95926;
-    --good: #4caf6a; --warn: #e0a030; --bad: #ef6b6b; --warn-bg: #3a2e14; --bad-bg: #3d1d1c;
+    --bg: #0d0d0d; --bg-2: #141413; --surface: #1a1a19; --surface-2: #232321; --border: rgba(255,255,255,.09);
+    --text: #f0efec; --text-2: #c3c2b7; --muted: #94938a; --grid: #2c2c2a; --axis: #383835;
+    --accent: #3987e5; --accent-2: #9085e9; --s1: #3987e5; --s2: #d95926;
+    --good: #0ca30c; --good-text: #0ca30c; --warn: #fab219; --warn-text: #fab219; --bad: #e66767;
+    --heat-0: #262624; --heat-1: #184f95; --heat-2: #1c5cab; --heat-3: #2a78d6; --heat-4: #5598e7; --heat-5: #9ec5f4;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    --hero-a: #10294d; --hero-b: #2c2470; --hero-c: #184f95;
   }
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #111110; --surface: #1a1a19; --surface-2: #232321; --border: #33332f;
-  --text: #f0efec; --text-2: #c3c2b7; --muted: #94938a; --grid: #2c2c29;
-  --accent: #3987e5; --s1: #3987e5; --s2: #d95926;
-  --good: #4caf6a; --warn: #e0a030; --bad: #ef6b6b; --warn-bg: #3a2e14; --bad-bg: #3d1d1c;
+  --bg: #0d0d0d; --bg-2: #141413; --surface: #1a1a19; --surface-2: #232321; --border: rgba(255,255,255,.09);
+  --text: #f0efec; --text-2: #c3c2b7; --muted: #94938a; --grid: #2c2c2a; --axis: #383835;
+  --accent: #3987e5; --accent-2: #9085e9; --s1: #3987e5; --s2: #d95926;
+  --good: #0ca30c; --good-text: #0ca30c; --warn: #fab219; --warn-text: #fab219; --bad: #e66767;
+  --heat-0: #262624; --heat-1: #184f95; --heat-2: #1c5cab; --heat-3: #2a78d6; --heat-4: #5598e7; --heat-5: #9ec5f4;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  --hero-a: #10294d; --hero-b: #2c2470; --hero-c: #184f95;
 }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-.wrap { max-width: 1240px; margin: 0 auto; padding: 16px; }
-header { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
-h1 { font-size: 22px; margin: 0; }
-h2 { font-size: 16px; margin: 0 0 4px; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1280px; margin: 0 auto; padding: 0 16px 24px; }
+a { color: var(--accent); }
+h2 { font-size: 17px; margin: 0; letter-spacing: -.01em; }
 .sub { color: var(--text-2); font-size: 13px; }
 .muted { color: var(--muted); }
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; min-width: 0; }
-.card-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-.filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 8px 0 12px; }
-.filters label { display: flex; flex-direction: column; font-size: 12px; color: var(--text-2); gap: 3px; }
-select, input, button { font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; min-height: 38px; }
-button { cursor: pointer; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* hero */
+.hero { position: relative; overflow: hidden; color: #fff; border-radius: 0 0 28px 28px; margin: 0 -16px 0; padding: 22px 32px 30px;
+  background: radial-gradient(1200px 400px at 85% -10%, var(--hero-b), transparent 60%), radial-gradient(900px 500px at -10% 110%, var(--hero-c), transparent 55%), var(--hero-a); }
+.hero::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .5;
+  background-image: radial-gradient(rgba(255,255,255,.12) 1px, transparent 1px); background-size: 22px 22px; mask-image: linear-gradient(to bottom, #000, transparent 85%); }
+.hero > * { position: relative; z-index: 1; }
+.topbar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.logo { width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,.16); display: grid; place-items: center; backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,.2); }
+.brand h1 { font-size: 20px; margin: 0; letter-spacing: -.02em; }
+.brand .tag { font-size: 12.5px; opacity: .8; }
+.chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; padding: 5px 11px; border-radius: 999px; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.18); white-space: nowrap; }
+.live-dot { width: 8px; height: 8px; border-radius: 50%; background: #5ee07a; box-shadow: 0 0 0 0 rgba(94,224,122,.7); animation: pulse 2s infinite; }
+@keyframes pulse { 70% { box-shadow: 0 0 0 8px rgba(94,224,122,0); } 100% { box-shadow: 0 0 0 0 rgba(94,224,122,0); } }
+.hero-grid { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 16px; align-items: stretch; }
+.hero-main .label { font-size: 13px; opacity: .85; display: flex; gap: 8px; align-items: center; }
+.hero-main .big { font-size: clamp(38px, 6vw, 60px); font-weight: 750; letter-spacing: -.035em; line-height: 1.05; margin: 6px 0 8px; }
+.hero-main .big small { font-size: .42em; font-weight: 600; opacity: .8; letter-spacing: 0; margin-right: 6px; }
+.pill { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 650; padding: 3px 9px; border-radius: 999px; background: rgba(255,255,255,.16); }
+.pill.up { background: rgba(94,224,122,.2); color: #b9f5c6; } .pill.down { background: rgba(255,120,120,.2); color: #ffd0d0; }
+.hero-spark { margin-top: 10px; height: 54px; }
+.hero-spark svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.pcard { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.16); border-radius: 18px; padding: 14px 16px; backdrop-filter: blur(8px); display: flex; flex-direction: column; gap: 6px; }
+.pcard .ph { display: flex; align-items: center; gap: 8px; font-weight: 650; font-size: 14px; }
+.pcard .pv { font-size: 26px; font-weight: 720; letter-spacing: -.02em; }
+.pcard .pm { font-size: 12.5px; opacity: .85; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.share-track { height: 6px; border-radius: 99px; background: rgba(255,255,255,.18); overflow: hidden; }
+.share-track span { display: block; height: 100%; border-radius: 99px; background: #fff; width: 0; transition: width .9s cubic-bezier(.2,.7,.2,1); }
+.langsw { display: inline-flex; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.2); border-radius: 999px; padding: 2px; }
+.langsw button { border: 0; background: transparent; color: #fff; min-height: 26px; padding: 2px 10px; font-size: 12.5px; border-radius: 999px; opacity: .8; }
+.langsw button[aria-pressed="true"] { background: #fff; color: #1c3f73; opacity: 1; font-weight: 700; }
+.dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; flex: none; }
+
+/* filters */
+.filters { position: sticky; top: 0; z-index: 20; margin: -16px 0 18px; padding: 10px 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  background: color-mix(in srgb, var(--surface) 82%, transparent); backdrop-filter: blur(14px) saturate(1.4); -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); }
+.presets { display: flex; gap: 4px; flex-wrap: wrap; background: var(--surface-2); padding: 3px; border-radius: 11px; }
+.presets button { border: 0; background: transparent; min-height: 30px; padding: 4px 10px; border-radius: 8px; font-size: 13px; color: var(--text-2); }
+.presets button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,.12); font-weight: 600; }
+.filters label { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+select, input, button { font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 6px 10px; min-height: 36px; }
+button { cursor: pointer; transition: border-color .15s, background .15s, transform .1s; }
 button:hover { border-color: var(--accent); }
-button.small { min-height: 30px; padding: 4px 10px; font-size: 13px; }
-.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-.seg button { border: 0; border-radius: 0; min-height: 30px; padding: 4px 12px; font-size: 13px; background: var(--surface); }
-.seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
-.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 16px; }
-.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
-.kpi .label { font-size: 12px; color: var(--text-2); }
-.kpi .value { font-size: 24px; font-weight: 650; margin: 2px 0; font-variant-numeric: tabular-nums; }
-.kpi .delta { font-size: 12px; color: var(--text-2); }
-.delta .up { color: var(--good); } .delta .down { color: var(--bad); }
-.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; }
-.grid2 .card { margin-bottom: 0; }
+button:active { transform: scale(.98); }
+.spacer { flex: 1; }
+.iconbtn { width: 36px; padding: 0; display: inline-grid; place-items: center; }
+
+/* cards */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 18px; box-shadow: var(--shadow); min-width: 0; }
+.card-head { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+.card-title { display: flex; gap: 10px; align-items: center; }
+.ic { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; flex: none; background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent); }
+.ic svg { width: 18px; height: 18px; }
+.section { margin-bottom: 16px; }
+.grid { display: grid; gap: 16px; margin-bottom: 16px; }
+.g-kpi { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.g-2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); }
+.g-3 { grid-template-columns: 2fr 1fr; }
+.g-hl { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+
+.kpi { position: relative; padding: 16px 16px 12px; display: flex; flex-direction: column; gap: 2px; overflow: hidden; }
+.kpi .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.kpi .label { font-size: 12.5px; color: var(--text-2); font-weight: 550; }
+.kpi .value { font-size: 26px; font-weight: 720; letter-spacing: -.025em; margin-top: 6px; }
+.kpi .value small { font-size: 13px; font-weight: 600; color: var(--muted); margin-left: 4px; letter-spacing: 0; }
+.kpi .foot { font-size: 12px; color: var(--text-2); min-height: 18px; }
+.kpi .spark { height: 34px; margin-top: 6px; }
+.kpi .spark svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.delta.up { color: var(--good-text); font-weight: 650; } .delta.down { color: var(--bad); font-weight: 650; }
+.meter { height: 8px; border-radius: 99px; background: var(--surface-2); overflow: hidden; margin-top: 8px; }
+.meter span { display: block; height: 100%; border-radius: 99px; background: var(--accent); width: 0; transition: width 1s cubic-bezier(.2,.7,.2,1); }
+.meter.s2 span { background: var(--s2); }
+
+.hl { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; transition: transform .2s; }
+.hl:hover { transform: translateY(-2px); }
+.hl .emo { font-size: 24px; line-height: 1; width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: var(--surface-2); flex: none; }
+.hl .t { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; font-weight: 650; }
+.hl .v { font-size: 16px; font-weight: 700; margin: 2px 0; letter-spacing: -.01em; }
+.hl .d { font-size: 12.5px; color: var(--text-2); }
+
+.seg { display: inline-flex; background: var(--surface-2); border-radius: 10px; padding: 3px; }
+.seg button { border: 0; background: transparent; min-height: 28px; padding: 3px 11px; font-size: 13px; border-radius: 8px; color: var(--text-2); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,.12); font-weight: 600; }
+.tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+button.small { min-height: 30px; padding: 3px 11px; font-size: 13px; border-radius: 9px; }
+
 .chart { position: relative; width: 100%; }
 .chart svg { display: block; width: 100%; height: auto; overflow: visible; }
-.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--text-2); margin-bottom: 6px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--text-2); margin-bottom: 8px; }
 .legend button { border: 0; background: none; padding: 2px 0; min-height: 0; display: inline-flex; align-items: center; gap: 6px; color: var(--text-2); }
 .legend button[aria-pressed="false"] { opacity: .4; text-decoration: line-through; }
-.sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
-.tip { position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 12px; box-shadow: 0 4px 16px rgba(0,0,0,.15); white-space: nowrap; z-index: 3; display: none; }
-.tip b { display: block; margin-bottom: 2px; }
-.tip .row { display: flex; gap: 8px; align-items: center; justify-content: space-between; }
-.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.legend .dash { width: 14px; height: 0; border-top: 2px dashed var(--muted); display: inline-block; }
+svg .bar { transform-box: fill-box; transform-origin: bottom; animation: grow .7s cubic-bezier(.2,.7,.2,1) both; }
+svg .hbar { transform-box: fill-box; transform-origin: left; animation: growx .8s cubic-bezier(.2,.7,.2,1) both; }
+svg .line { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 1.2s ease-out forwards; }
+svg .cell { transition: opacity .15s; }
+svg .cell:hover, svg .hit:hover + * { opacity: .75; }
+@keyframes grow { from { transform: scaleY(0); } } @keyframes growx { from { transform: scaleX(0); } } @keyframes draw { to { stroke-dashoffset: 0; } }
+
+.tip { position: fixed; pointer-events: none; z-index: 50; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 12px; padding: 9px 11px; font-size: 12.5px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.18); white-space: nowrap; opacity: 0; transform: translateY(4px); transition: opacity .12s, transform .12s; }
+.tip.on { opacity: 1; transform: none; }
+.tip b { display: block; margin-bottom: 3px; }
+.tip .r { display: flex; gap: 14px; justify-content: space-between; align-items: center; }
+.tip .r span:first-child { display: inline-flex; gap: 6px; align-items: center; color: var(--text-2); }
+
+.heat-wrap { overflow-x: auto; padding-bottom: 4px; }
+.heat-legend { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); justify-content: flex-end; margin-top: 8px; }
+.heat-legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+.stock-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.sc { border: 1px solid var(--border); border-radius: 16px; padding: 14px; background: var(--surface); position: relative; overflow: hidden; }
+.sc::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--c, var(--accent)); }
+.sc .h { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.sc .code { font-weight: 750; font-size: 13px; letter-spacing: .02em; }
+.sc .pk { font-size: 12.5px; color: var(--text-2); }
+.sc .oh { font-size: 24px; font-weight: 730; letter-spacing: -.02em; margin: 8px 0 2px; }
+.sc .oh small { font-size: 12.5px; color: var(--muted); font-weight: 550; letter-spacing: 0; }
+.sc .row { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--text-2); margin-top: 8px; }
+.sc .meter { margin-top: 4px; height: 6px; }
+.badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.badge.ok { color: var(--good-text); background: color-mix(in srgb, var(--good) 14%, transparent); }
+.badge.warn { color: var(--warn-text); background: color-mix(in srgb, var(--warn) 20%, transparent); }
+.badge.idle { color: var(--text-2); background: var(--surface-2); }
+
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 12px; }
 table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
-th, td { padding: 7px 8px; border-bottom: 1px solid var(--grid); text-align: left; white-space: nowrap; }
-th { font-weight: 600; color: var(--text-2); cursor: pointer; user-select: none; position: sticky; top: 0; background: var(--surface); }
-th[aria-sort="ascending"]::after { content: " ▲"; font-size: 10px; }
-th[aria-sort="descending"]::after { content: " ▼"; font-size: 10px; }
-td.num, th.num { text-align: right; }
-tr.low td { background: var(--warn-bg); }
-.badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; padding: 1px 7px; border-radius: 999px; }
-.badge.warn { color: var(--warn); border: 1px solid currentColor; }
-.badge.ok { color: var(--good); border: 1px solid currentColor; }
-.bar-cell { display: flex; align-items: center; gap: 8px; min-width: 140px; }
-.bar-cell span.b { height: 10px; border-radius: 0 4px 4px 0; display: inline-block; }
-.empty { padding: 24px; text-align: center; color: var(--muted); }
-.notice { background: var(--warn-bg); border: 1px solid var(--warn); color: var(--text); border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; font-size: 14px; }
-.ledger-tools { display: flex; flex-wrap: wrap; gap: 8px; }
+th, td { padding: 9px 10px; border-bottom: 1px solid var(--grid); text-align: left; white-space: nowrap; }
+th { font-weight: 600; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; cursor: pointer; user-select: none; position: sticky; top: 0; background: var(--surface); z-index: 1; }
+tbody tr { transition: background .12s; }
+tbody tr:hover { background: var(--surface-2); }
+th[aria-sort="ascending"]::after { content: " ↑"; } th[aria-sort="descending"]::after { content: " ↓"; }
+td.n, th.n { text-align: right; }
+.bar-cell { display: flex; align-items: center; gap: 8px; min-width: 150px; }
+.bar-cell span.b { height: 8px; border-radius: 0 4px 4px 0; display: inline-block; }
+.typ { display: inline-flex; gap: 6px; align-items: center; font-weight: 550; }
+.typ i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
 .ledger-scroll { max-height: 520px; overflow: auto; }
-footer { color: var(--muted); font-size: 12px; padding: 8px 0 24px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: space-between; }
-a { color: var(--accent); }
+.empty { padding: 28px; text-align: center; color: var(--muted); }
+.notice { background: color-mix(in srgb, var(--warn) 16%, var(--surface)); border: 1px solid color-mix(in srgb, var(--warn) 50%, transparent); border-radius: 14px; padding: 12px 16px; margin-bottom: 16px; font-size: 14px; }
+details.more > summary { cursor: pointer; color: var(--accent); font-size: 13px; font-weight: 600; margin-top: 12px; list-style: none; }
+details.more > summary::-webkit-details-marker { display: none; }
+footer { color: var(--muted); font-size: 12px; padding: 8px 0 28px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: space-between; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-@media (max-width: 600px) { .kpi .value { font-size: 20px; } .filters { position: static; } .grid2 { grid-template-columns: 1fr; } }
+.skeleton { background: linear-gradient(90deg, var(--surface-2), var(--bg-2), var(--surface-2)); background-size: 200% 100%; animation: shimmer 1.2s infinite; border-radius: 8px; color: transparent !important; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+@media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr 1fr; } .hero-main { grid-column: 1 / -1; } .g-3 { grid-template-columns: 1fr; } }
+@media (max-width: 600px) {
+  .hero { padding: 18px 16px 26px; border-radius: 0 0 22px 22px; }
+  .hero-grid { grid-template-columns: 1fr; }
+  .filters { position: static; }
+  .kpi .value { font-size: 22px; }
+  .g-kpi { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .kpi { padding: 12px; }
+  .card { padding: 14px; border-radius: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } svg .line { stroke-dashoffset: 0; } }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <div>
-      <h1>Wiper blades & spark plugs</h1>
-      <div class="sub">Sales &amp; inventory · U01 Wiper blade · U02 Spark plugs</div>
-    </div>
-    <div class="sub" id="asOf">Loading…</div>
-  </header>
-
-  <div class="filters" role="search">
-    <label for="fPreset">Period
-      <select id="fPreset">
-        <option value="today">Today</option>
-        <option value="7">Last 7 days</option>
-        <option value="30" selected>Last 30 days</option>
-        <option value="month">This month</option>
-        <option value="lastmonth">Last month</option>
-        <option value="ytd">Year to date</option>
-        <option value="custom">Custom</option>
-      </select>
-    </label>
-    <label for="fFrom">From <input type="date" id="fFrom"></label>
-    <label for="fTo">To <input type="date" id="fTo"></label>
-    <label for="fSku">Product
-      <select id="fSku"><option value="">Both</option><option value="U01">U01 Wiper blade</option><option value="U02">U02 Spark plugs</option></select>
-    </label>
-    <label for="fVar">Variation <select id="fVar"><option value="">All</option></select></label>
-    <label for="fBucket">Group by
-      <select id="fBucket"><option value="">Auto</option><option value="day">Day</option><option value="week">Week</option><option value="month">Month</option></select>
-    </label>
-    <button id="themeBtn" type="button" title="Switch light / dark">◐ Theme</button>
-  </div>
-
-  <div id="notice"></div>
-  <section class="kpis" id="kpis" aria-label="Key figures"></section>
-
-  <section class="card">
-    <div class="card-head">
-      <div><h2>Sales trend</h2><div class="sub" id="trendSub"></div></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <div class="seg" role="group" aria-label="Metric">
-          <button type="button" id="mRevenue" aria-pressed="true">Revenue</button>
-          <button type="button" id="mUnits" aria-pressed="false">Units</button>
-        </div>
-        <button type="button" class="small" id="trendTableBtn">Table</button>
-        <button type="button" class="small" id="trendCsv">CSV</button>
+  <header class="hero">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 32 32"><path d="M5 25 Q16 4 27 25" stroke="white" stroke-width="2.8" fill="none" stroke-linecap="round"/><path d="M16 25 L23 11" stroke="white" stroke-width="2.8" stroke-linecap="round"/></svg></div>
+        <div><h1 data-i18n="title">Wiper blades &amp; spark plugs</h1><div class="tag" data-i18n="tagline">U01 Wiper blade · U02 Spark plugs · Sales &amp; inventory</div></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <div class="langsw" role="group" aria-label="Language"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="zh" aria-pressed="false" lang="zh">中文</button></div>
+        <span class="chip" id="periodChip">…</span>
+        <span class="chip"><span class="live-dot" aria-hidden="true"></span><span id="asOf">Loading…</span></span>
       </div>
     </div>
-    <div class="legend" id="trendLegend"></div>
-    <div class="chart" id="trendChart"></div>
-    <div class="table-wrap" id="trendTable" hidden></div>
+    <div class="hero-grid">
+      <div class="hero-main">
+        <div class="label"><span data-i18n="heroLabel">Revenue this period</span> <span class="pill" id="heroDelta"></span></div>
+        <div class="big" id="heroRevenue"><small>GHS</small><span class="skeleton">000,000</span></div>
+        <div class="sub" style="color:rgba(255,255,255,.8)" id="heroSub">&nbsp;</div>
+        <div class="hero-spark" id="heroSpark" aria-hidden="true"></div>
+      </div>
+      <div class="pcard" id="pcU01"></div>
+      <div class="pcard" id="pcU02"></div>
+    </div>
+  </header>
+
+  <div style="height:16px"></div>
+  <nav class="filters" role="search" aria-label="Filters">
+    <div class="presets" role="group" aria-label="Period" id="presets">
+      <button type="button" data-p="7" data-i18n="p7">7D</button>
+      <button type="button" data-p="30" data-i18n="p30" aria-pressed="true">30D</button>
+      <button type="button" data-p="90" data-i18n="p90">90D</button>
+      <button type="button" data-p="month" data-i18n="pMonth">This month</button>
+      <button type="button" data-p="lastmonth" data-i18n="pLastMonth">Last month</button>
+      <button type="button" data-p="ytd" data-i18n="pYtd">YTD</button>
+      <button type="button" data-p="all" data-i18n="pAll">All</button>
+    </div>
+    <label for="fFrom"><span data-i18n="from">From</span> <input type="date" id="fFrom"></label>
+    <label for="fTo"><span data-i18n="to">to</span> <input type="date" id="fTo"></label>
+    <label for="fSku" class="sr">Product</label>
+    <select id="fSku"><option value="" data-i18n="bothProducts">Both products</option><option value="U01" data-i18n="U01">U01 Wiper blade</option><option value="U02" data-i18n="U02">U02 Spark plugs</option></select>
+    <label for="fVar" class="sr">Variation</label>
+    <select id="fVar"><option value="" data-i18n="allPack">All packagings</option></select>
+    <label for="fBucket" class="sr">Group by</label>
+    <select id="fBucket"><option value="" data-i18n="autoGroup">Auto grouping</option><option value="day" data-i18n="byDay">By day</option><option value="week" data-i18n="byWeek">By week</option><option value="month" data-i18n="byMonth">By month</option></select>
+    <span class="spacer"></span>
+    <button id="themeBtn" type="button" class="iconbtn" title="Light / dark" aria-label="Switch light or dark theme">◐</button>
+  </nav>
+
+  <div id="notice"></div>
+
+  <section class="grid g-kpi" id="kpis" aria-label="Key figures"></section>
+
+  <section class="section" aria-label="Highlights">
+    <div class="grid g-hl" id="highlights" style="margin-bottom:0"></div>
   </section>
 
-  <div class="grid2">
+  <div class="grid g-3">
     <section class="card">
-      <div class="card-head"><div><h2>Sales by variation</h2><div class="sub">Selected period</div></div><button type="button" class="small" id="varCsv">CSV</button></div>
-      <div class="table-wrap" id="varTable"></div>
+      <div class="card-head">
+        <div class="card-title"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
+          <div><h2 data-i18n="salesTrend">Sales trend</h2><div class="sub" id="trendSub"></div></div></div>
+        <div class="tools">
+          <div class="seg" role="group" aria-label="Metric">
+            <button type="button" id="mRevenue" aria-pressed="true" data-i18n="revenue">Revenue</button>
+            <button type="button" id="mUnits" aria-pressed="false" data-i18n="units">Units</button>
+          </div>
+          <button type="button" class="small" id="trendTableBtn" data-i18n="table">Table</button>
+          <button type="button" class="small" id="trendCsv">CSV</button>
+        </div>
+      </div>
+      <div class="legend" id="trendLegend"></div>
+      <div class="chart" id="trendChart"></div>
+      <div class="table-wrap" id="trendTable" hidden></div>
     </section>
     <section class="card">
-      <div class="card-head"><div><h2>Top customers</h2><div class="sub">Top 10 by revenue</div></div><button type="button" class="small" id="custCsv">CSV</button></div>
-      <div class="table-wrap" id="custTable"></div>
+      <div class="card-head">
+        <div class="card-title"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></div>
+          <div><h2 data-i18n="runningTotal">Running total</h2><div class="sub" data-i18n="runningSub">Revenue so far vs the previous period</div></div></div>
+      </div>
+      <div class="legend" id="cumLegend"></div>
+      <div class="chart" id="cumChart"></div>
     </section>
   </div>
-  <div style="height:16px"></div>
 
-  <section class="card">
-    <div class="card-head"><div><h2>Sales by discount tier</h2><div class="sub" id="tierSub">Orders grouped by order total</div></div><button type="button" class="small" id="tierCsv">CSV</button></div>
-    <div class="table-wrap" id="tierTable"></div>
-  </section>
+  <div class="grid g-2">
+    <section class="card">
+      <div class="card-head">
+        <div class="card-title"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h10M4 12h16M4 18h7"/></svg></div>
+          <div><h2 data-i18n="mix">Packaging mix</h2><div class="sub" data-i18n="mixSub">What sells, in pieces and cedis</div></div></div>
+        <div class="tools"><div class="seg" role="group" aria-label="Mix metric"><button type="button" id="mixRev" aria-pressed="true" data-i18n="revenue">Revenue</button><button type="button" id="mixUnits" aria-pressed="false" data-i18n="pieces">Pieces</button></div></div>
+      </div>
+      <div class="chart" id="mixChart"></div>
+    </section>
+    <section class="card">
+      <div class="card-head">
+        <div class="card-title"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></div>
+          <div><h2 data-i18n="rhythm">Weekly rhythm</h2><div class="sub" id="dowSub">Revenue by day of the week</div></div></div>
+      </div>
+      <div class="chart" id="dowChart"></div>
+    </section>
+  </div>
 
-  <section class="card">
+  <section class="card section">
     <div class="card-head">
-      <div><h2>Stock on hand &amp; reorder</h2><div class="sub">As of today · days of cover uses the faster of the 7- and 28-day sales rates · suggestion covers 60 days, in whole packs</div></div>
-      <button type="button" class="small" id="stockCsv">CSV</button>
+      <div class="card-title"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="10" y="3" width="5" height="5" rx="1"/><rect x="17" y="3" width="4" height="5" rx="1"/><rect x="3" y="10" width="5" height="5" rx="1"/><rect x="10" y="10" width="5" height="5" rx="1"/><rect x="3" y="17" width="5" height="4" rx="1"/></svg></div>
+        <div><h2 data-i18n="calendar">Sales calendar</h2><div class="sub" id="heatSub">Daily revenue, last 26 weeks</div></div></div>
     </div>
-    <div class="table-wrap" id="stockTable"></div>
+    <div class="heat-wrap" id="heatChart"></div>
+    <div class="heat-legend" aria-hidden="true"><span data-i18n="less">Less</span> <i style="background:var(--heat-0)"></i><i style="background:var(--heat-1)"></i><i style="background:var(--heat-2)"></i><i style="background:var(--heat-3)"></i><i style="background:var(--heat-4)"></i><i style="background:var(--heat-5)"></i> <span data-i18n="more">More</span></div>
   </section>
 
-  <section class="card">
+  <section class="card section">
     <div class="card-head">
-      <div><h2>Stock movements</h2><div class="sub" id="ledgerSub"></div></div>
-      <div class="ledger-tools">
+      <div class="card-title"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4zM3 7v10l9 4 9-4V7M12 11v10"/></svg></div>
+        <div><h2 data-i18n="stockHealth">Stock health</h2><div class="sub" data-i18n="stockSub">As of today · cover uses the faster of the 7- and 28-day sales rates · bar = days of cover against a 60-day target</div></div></div>
+      <div class="tools"><button type="button" class="small" id="stockCsv">CSV</button></div>
+    </div>
+    <div class="stock-grid" id="stockCards"></div>
+    <details class="more"><summary data-i18n="showStockTable">Show stock &amp; reorder table</summary><div class="table-wrap" id="stockTable" style="margin-top:10px"></div></details>
+  </section>
+
+  <section class="card section">
+    <div class="card-head">
+      <div class="card-title"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 6H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+        <div><h2 data-i18n="priceTitle">Price &amp; margin by packaging</h2><div class="sub" data-i18n="priceSub">Average price achieved per piece vs list price, and gross margin</div></div></div>
+      <div class="tools"><button type="button" class="small" id="priceCsv">CSV</button></div>
+    </div>
+    <div class="table-wrap" id="priceTable"></div>
+  </section>
+
+  <div class="grid g-2">
+    <section class="card">
+      <div class="card-head"><div class="card-title"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0114 0M16 4a4 4 0 010 8M22 21a6 6 0 00-4-5.7"/></svg></div>
+        <div><h2 data-i18n="topCustomers">Top customers</h2><div class="sub" data-i18n="top10">Top 10 by revenue</div></div></div><button type="button" class="small" id="custCsv">CSV</button></div>
+      <div class="table-wrap" id="custTable"></div>
+    </section>
+    <section class="card">
+      <div class="card-head"><div class="card-title"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 01-2.8 0L2 12V2h10l8.6 8.6a2 2 0 010 2.8z"/><circle cx="7" cy="7" r="1.5"/></svg></div>
+        <div><h2 data-i18n="tiers">Discount tiers</h2><div class="sub" data-i18n="tiersSub">Orders grouped by order total</div></div></div><button type="button" class="small" id="tierCsv">CSV</button></div>
+      <div class="table-wrap" id="tierTable"></div>
+    </section>
+  </div>
+
+  <section class="card section">
+    <div class="card-head">
+      <div class="card-title"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></div>
+        <div><h2 data-i18n="movements">Stock movements</h2><div class="sub" id="ledgerSub"></div></div></div>
+      <div class="tools">
         <label for="lType" class="sr">Movement type</label>
-        <select id="lType"><option value="">All types</option><option value="sale">Sales</option><option value="receipt">Receipts</option><option value="adjustment">Adjustments</option><option value="transfer">Transfers</option><option value="opening">Opening</option></select>
+        <select id="lType"><option value="" data-i18n="allTypes">All types</option><option value="sale" data-i18n="tSales">Sales</option><option value="receipt" data-i18n="tReceipts">Receipts</option><option value="adjustment" data-i18n="tAdjustments">Adjustments</option><option value="transfer" data-i18n="tTransfers">Transfers</option><option value="opening" data-i18n="tOpening">Opening</option></select>
         <label for="lSearch" class="sr">Search</label>
-        <input id="lSearch" type="search" placeholder="Search customer / code">
+        <input id="lSearch" type="search" placeholder="Search customer / code" data-i18n-ph="search">
         <button type="button" class="small" id="ledgerCsv">CSV</button>
       </div>
     </div>
@@ -183,10 +371,11 @@ a { color: var(--accent); }
   </section>
 
   <footer>
-    <span>Money in GHS. Quantities are pieces (blades / plugs). Balance = running stock for that variation.</span>
-    <a href="admin.html">Admin</a>
+    <span data-i18n="footer">Money in GHS, revenue after discounts. Quantities are pieces (blades / plugs). Balance = running stock for that variation.</span>
+    <a href="admin.html" data-i18n="admin">Admin</a>
   </footer>
 </div>
+<div class="tip" id="tip" role="tooltip"></div>
 
 <script>
 'use strict';
@@ -195,46 +384,196 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 const ghs = p => 'GHS ' + (p / 100).toLocaleString('en-GH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 const ghs0 = p => 'GHS ' + Math.round(p / 100).toLocaleString('en-GH');
 const num = n => Number(n).toLocaleString('en-GH');
+const short = v => { const a = Math.abs(v); return a >= 1e6 ? (v / 1e6).toFixed(a >= 1e7 ? 0 : 1) + 'M' : a >= 1e3 ? (v / 1e3).toFixed(a >= 1e4 ? 0 : 1) + 'k' : String(Math.round(v)); };
 const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-const PRODUCTS = {U01: {name: 'U01 Wiper blade', color: '--s1'}, U02: {name: 'U02 Spark plugs', color: '--s2'}};
-const TYPE_LABEL = {sale: 'Sale', receipt: 'Receipt', adjustment: 'Adjustment', transfer: 'Transfer', opening: 'Opening'};
-let data = null, metric = 'revenue', hidden = {}, showTrendTable = false;
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+// ---------- languages (English / 中文) ----------
+const I18N = {
+  en: {
+    title: 'Wiper blades & spark plugs', tagline: 'U01 Wiper blade · U02 Spark plugs · Sales & inventory', docTitle: 'Wipers & Spark Plugs',
+    U01: 'U01 Wiper blade', U02: 'U02 Spark plugs', U01unit: 'blades', U02unit: 'plugs',
+    heroLabel: 'Revenue this period', firstSales: 'first sales', noSalesYet: 'No sales yet', vsPrevN: 'vs prev {n}d',
+    heroSub: '{u} pieces sold across {l} sale lines · margin {m}', heroDisc: ' · {d} discounts', heroNone: 'No sales in this period yet.',
+    nSold: '{n} {u} sold', filteredOut: 'filtered out', pctRevenue: '{p}% of revenue', inStock: 'In stock',
+    updated: 'Updated {d}', noData: 'No data yet', loadFail: 'Could not load data: ', nDays: '{n} days',
+    notice: 'No products or stock have been loaded yet. An admin needs to load the opening stock from the Admin page.',
+    p7: '7D', p30: '30D', p90: '90D', pMonth: 'This month', pLastMonth: 'Last month', pYtd: 'YTD', pAll: 'All',
+    from: 'From', to: 'to', bothProducts: 'Both products', allPack: 'All packagings', autoGroup: 'Auto grouping', byDay: 'By day', byWeek: 'By week', byMonth: 'By month',
+    newPeriod: 'new this period', vsPrev: 'vs prev', pcs: 'pcs', packs: 'packs', noSales: 'no sales',
+    kPieces: 'Pieces sold', kMargin: 'Gross margin', kAvg: 'Avg price / piece', ofList: '{p}% of list price', avgTip: 'Price achieved vs list (retail) price',
+    kDisc: 'Discounts given', ofGross: '{p}% of gross sales', kLines: 'Sale lines', avgLine: 'avg {a} per line', kStock: 'Stock on hand', fullPacks: '{n} full packs/boxes',
+    kCost: 'Stock value at cost', tiedUp: 'money tied up in stock', kRetail: 'Stock value at retail', potMargin: 'potential margin {m}',
+    hBest: 'Best day', nPieces: '{n} pieces', hTop: 'Top seller', hTopD: '{r} · {n} pieces · {p}% of revenue',
+    hDow: 'Busiest weekday', hDowD: '{r} over {n} × {d}', hDays: 'Selling days', hDaysV: '{a} of {b}', hDaysD: '{r} on an average selling day',
+    hLow: 'Running low', hLowD: 'Reorder soon — see Stock health', hHealthy: 'Stock is healthy', hHealthyV: '{c} runs out first', hHealthyD: "~{n} days of cover at today's pace",
+    hSlow: 'Slow movers', hSlowV: '{n} packagings', hSlowD: 'No sales in 28 days: {c} · {v} at cost', hSell: 'Fastest sell-through', hSellD: '{a} of {b} pieces sold since the opening count',
+    hDisc: 'Discounts', hDiscD: 'given this period on {g} gross sales', hWelcome: 'Welcome', hWelcomeD: 'Upload the sales report on the Admin page to light this up.',
+    salesTrend: 'Sales trend', revenue: 'Revenue', units: 'Units', table: 'Table', hideTable: 'Hide table', by_day: 'by day', by_week: 'by week', by_month: 'by month', piecesW: 'pieces',
+    total: 'Total', wk: 'Wk ', cPeriod: 'Period', cTotalRev: 'Total revenue', noSalesPeriod: 'No sales in this period.',
+    runningTotal: 'Running total', runningSub: 'Revenue so far vs the previous period', thisPeriod: 'This period', prevNDays: 'Previous {n} days', thatDay: 'That day', prevPeriod: 'Previous period',
+    mix: 'Packaging mix', mixSub: 'What sells, in pieces and cedis', pieces: 'Pieces', margin: 'Margin', share: 'Share', pctMargin: '{p}% margin',
+    rhythm: 'Weekly rhythm', dowSub: 'Revenue by day of the week', dowLeads: '{d} leads', daysInPeriod: '{d}s in period', avgPer: 'Average per {d}',
+    dow: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], dowLong: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    calendar: 'Sales calendar', heatSub: 'Daily revenue, {a} – {b} · faded days are outside the selected period', less: 'Less', more: 'More',
+    stockHealth: 'Stock health', stockSub: 'As of today · cover uses the faster of the 7- and 28-day sales rates · bar = days of cover against a 60-day target',
+    sReorder: 'Reorder', sIdle: 'No recent sales', sOk: 'Healthy', no28: 'No sales in the last 28 days', coverTip: '{d} days at {r} pcs/day · runs out ~{o}',
+    sellThrough: 'Sell-through since count', soldOf: '{a} of {b} pieces sold', valCR: 'Value at cost / retail', suggest: 'Suggested reorder', noStock: 'No stock loaded yet.',
+    showStockTable: 'Show stock & reorder table', low: 'Low', ok: 'OK',
+    cCode: 'Code', cPack: 'Packaging', cStatus: 'Status', cOnHand: 'On hand (pcs)', cPacks: 'Full packs', cAvg7: 'Avg/day 7d', cAvg28: 'Avg/day 28d', cCover: 'Days of cover',
+    cStockout: 'Projected stockout', cSoldSince: 'Sold since count', cReorderLvl: 'Reorder level', cSuggest: 'Suggested reorder (pcs)', cValCost: 'Value at cost', cValRetail: 'Value at retail',
+    priceTitle: 'Price & margin by packaging', priceSub: 'Average price achieved per piece vs list price, and gross margin',
+    cAvgPc: 'Avg / piece', cListPc: 'List / piece', cOfList: 'Of list', cDiscounts: 'Discounts', cMarginPct: 'Margin %',
+    topCustomers: 'Top customers', top10: 'Top 10 by revenue', cCustomer: 'Customer', cOrders: 'Orders', walkin: '(walk-in / not recorded)',
+    tiers: 'Discount tiers', tiersSub: 'Orders grouped by order total', cOrderSize: 'Order size', tierNone: 'No discount tier', tierOver: 'Over GHS {a} ({p}%)',
+    movements: 'Stock movements', allTypes: 'All types', tSales: 'Sales', tReceipts: 'Receipts', tAdjustments: 'Adjustments', tTransfers: 'Transfers', tOpening: 'Opening', search: 'Search customer / code',
+    ledgerSub: '{a} shown of {b} in the period', ledgerMore: ' (latest 1,000 loaded; narrow the dates for older ones)', noMoves: 'No movements in this period.', noDataShort: 'No data.',
+    cDate: 'Date', cType: 'Type', cQty: 'Qty (pcs)', cUnitPrice: 'Unit price', cAmount: 'Amount', cBalance: 'Balance',
+    type_sale: 'Sale', type_receipt: 'Receipt', type_adjustment: 'Adjustment', type_transfer: 'Transfer', type_opening: 'Opening',
+    footer: 'Money in GHS, revenue after discounts. Quantities are pieces (blades / plugs). Balance = running stock for that variation.', admin: 'Admin',
+  },
+  zh: {
+    title: '雨刮片与火花塞', tagline: 'U01 雨刮片 · U02 火花塞 · 销售与库存', docTitle: '雨刮片与火花塞',
+    U01: 'U01 雨刮片', U02: 'U02 火花塞', U01unit: '片', U02unit: '个',
+    heroLabel: '本期收入', firstSales: '首批销售', noSalesYet: '暂无销售', vsPrevN: '较前{n}天',
+    heroSub: '共售出 {u} 件，{l} 笔销售 · 毛利 {m}', heroDisc: ' · 折扣 {d}', heroNone: '本期暂无销售。',
+    nSold: '已售 {n} {u}', filteredOut: '已筛除', pctRevenue: '占收入 {p}%', inStock: '库存',
+    updated: '更新于 {d}', noData: '暂无数据', loadFail: '无法加载数据：', nDays: '{n} 天',
+    notice: '尚未载入产品或库存。请管理员在管理页面载入期初库存。',
+    p7: '7天', p30: '30天', p90: '90天', pMonth: '本月', pLastMonth: '上月', pYtd: '今年', pAll: '全部',
+    from: '从', to: '至', bothProducts: '全部产品', allPack: '全部包装', autoGroup: '自动分组', byDay: '按日', byWeek: '按周', byMonth: '按月',
+    newPeriod: '本期新增', vsPrev: '较上期', pcs: '件', packs: '包', noSales: '无销售',
+    kPieces: '售出件数', kMargin: '毛利', kAvg: '每件均价', ofList: '为标价的 {p}%', avgTip: '实际售价与标价（零售价）之比',
+    kDisc: '折扣金额', ofGross: '占总销售额 {p}%', kLines: '销售笔数', avgLine: '每笔平均 {a}', kStock: '现有库存', fullPacks: '整包/整盒 {n}',
+    kCost: '库存成本价值', tiedUp: '库存占用资金', kRetail: '库存零售价值', potMargin: '潜在毛利 {m}',
+    hBest: '最佳单日', nPieces: '{n} 件', hTop: '最畅销', hTopD: '{r} · {n} 件 · 占收入 {p}%',
+    hDow: '最旺的星期', hDowD: '{n} 个{d}合计 {r}', hDays: '有销售的天数', hDaysV: '{a} / {b} 天', hDaysD: '平均每个销售日 {r}',
+    hLow: '库存偏低', hLowD: '请尽快补货（见库存状况）', hHealthy: '库存充足', hHealthyV: '{c} 最先售罄', hHealthyD: '按当前速度约可售 {n} 天',
+    hSlow: '滞销品', hSlowV: '{n} 种包装', hSlowD: '28 天无销售：{c} · 成本 {v}', hSell: '售罄率最高', hSellD: '自期初盘点以来售出 {a} / {b} 件',
+    hDisc: '折扣', hDiscD: '本期总销售额 {g} 中给出的折扣', hWelcome: '欢迎', hWelcomeD: '在管理页面上传销售报表即可显示数据。',
+    salesTrend: '销售趋势', revenue: '收入', units: '数量', table: '表格', hideTable: '隐藏表格', by_day: '按日', by_week: '按周', by_month: '按月', piecesW: '件',
+    total: '合计', wk: '周 ', cPeriod: '期间', cTotalRev: '总收入', noSalesPeriod: '本期无销售。',
+    runningTotal: '累计收入', runningSub: '本期累计收入与上期对比', thisPeriod: '本期', prevNDays: '前 {n} 天', thatDay: '当日', prevPeriod: '上期',
+    mix: '包装组合', mixSub: '哪些包装好卖（件数与金额）', pieces: '件数', margin: '毛利', share: '占比', pctMargin: '毛利率 {p}%',
+    rhythm: '每周规律', dowSub: '按星期统计的收入', dowLeads: '{d}最高', daysInPeriod: '期间内{d}天数', avgPer: '每个{d}平均',
+    dow: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'], dowLong: ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'],
+    calendar: '销售日历', heatSub: '每日收入，{a} – {b} · 淡色为所选期间以外', less: '少', more: '多',
+    stockHealth: '库存状况', stockSub: '截至今天 · 可售天数按 7 天与 28 天销售速度中较快者计算 · 进度条 = 可售天数（目标 60 天）',
+    sReorder: '需补货', sIdle: '近期无销售', sOk: '充足', no28: '近 28 天无销售', coverTip: '按每天 {r} 件约可售 {d} 天 · 预计 {o} 售罄',
+    sellThrough: '盘点后售罄率', soldOf: '已售 {a} / {b} 件', valCR: '成本 / 零售价值', suggest: '建议补货', noStock: '尚未载入库存。',
+    showStockTable: '显示库存与补货表', low: '偏低', ok: '正常',
+    cCode: '编号', cPack: '包装', cStatus: '状态', cOnHand: '库存（件）', cPacks: '整包数', cAvg7: '7日日均', cAvg28: '28日日均', cCover: '可售天数',
+    cStockout: '预计售罄日', cSoldSince: '盘点后售出', cReorderLvl: '补货点', cSuggest: '建议补货（件）', cValCost: '成本价值', cValRetail: '零售价值',
+    priceTitle: '各包装的价格与毛利', priceSub: '每件实际均价与标价对比，以及毛利',
+    cAvgPc: '每件均价', cListPc: '每件标价', cOfList: '占标价', cDiscounts: '折扣', cMarginPct: '毛利率',
+    topCustomers: '主要客户', top10: '收入前 10 名', cCustomer: '客户', cOrders: '订单', walkin: '（散客 / 未记录）',
+    tiers: '折扣档次', tiersSub: '按订单金额分组', cOrderSize: '订单金额', tierNone: '无折扣', tierOver: '超过 GHS {a}（{p}%）',
+    movements: '库存变动', allTypes: '全部类型', tSales: '销售', tReceipts: '入库', tAdjustments: '调整', tTransfers: '调拨', tOpening: '期初', search: '搜索客户 / 编号',
+    ledgerSub: '本期共 {b} 条，显示 {a} 条', ledgerMore: '（仅载入最新 1,000 条，请缩小日期范围查看更早记录）', noMoves: '本期无库存变动。', noDataShort: '无数据。',
+    cDate: '日期', cType: '类型', cQty: '数量（件）', cUnitPrice: '单价', cAmount: '金额', cBalance: '结存',
+    type_sale: '销售', type_receipt: '入库', type_adjustment: '调整', type_transfer: '调拨', type_opening: '期初',
+    footer: '金额单位为加纳塞地（GHS），收入为折扣后金额。数量单位为件（片 / 个）。结存 = 该包装的累计库存。', admin: '管理',
+  },
+};
+// Chinese names for the seeded packagings (an admin-renamed packaging falls back to its own text).
+const PACK_ZH = {
+  'Blue box (5 mini boxes × 2 blades)': '蓝盒（5 小盒 × 2 片）', 'Brown box (5 mini boxes × 1 blade)': '棕盒（5 小盒 × 1 片）',
+  'White box (2 blades)': '白盒（2 片）', 'White plastic (1 blade)': '白色塑料包装（1 片）', 'Bundle (50 blades)': '捆装（50 片）',
+  'Loose blade': '散装雨刮片', 'Box of 100 spark plugs': '火花塞盒装（100 个）',
+};
+let lang = 'en';
+try { lang = localStorage.getItem('wiper_lang') || ((navigator.language || '').toLowerCase().startsWith('zh') ? 'zh' : 'en'); } catch (e) {}
+if (!I18N[lang]) lang = 'en';
+const LOC = () => lang === 'zh' ? 'zh-CN' : 'en-GB';
+function t(key, vars) {
+  let s = (I18N[lang] && key in I18N[lang]) ? I18N[lang][key] : (key in I18N.en ? I18N.en[key] : key);
+  if (vars && typeof s === 'string') s = s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? vars[k] : m);
+  return s;
+}
+const packName = p => lang === 'zh' && PACK_ZH[p] ? PACK_ZH[p] : p;
+const packShort = p => packName(p).replace(/\s*[（(].*$/, '');
+const tierLabel = l => { if (l === 'No discount tier') return t('tierNone'); const m = /^Over GHS ([\d,]+) \((\d+)%\)$/.exec(l); return m ? t('tierOver', {a: m[1], p: m[2]}) : l; };
+function applyLang() {
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  document.title = t('docTitle');
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
+  document.querySelectorAll('.langsw button').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === lang));
+}
+document.querySelectorAll('.langsw button').forEach(b => b.onclick = () => {
+  lang = b.dataset.lang; try { localStorage.setItem('wiper_lang', lang); } catch (e) {}
+  applyLang(); if (data) { fillVariations(); render(); }
+  if (showTrendTable) $('trendTableBtn').textContent = t('hideTable');
+});
+applyLang();
 
-// ---- theme ----
+const PRODUCTS = {U01: {color: '--s1'}, U02: {color: '--s2'}};
+const pname = s => t(s), punit = s => t(s + 'unit');
+const TYPE = {sale: '--s1', receipt: '--good', adjustment: '--warn', transfer: '--accent-2', opening: '--muted'};
+const dow = i => t('dow')[i], dowLong = i => t('dowLong')[i];
+let data = null, metric = 'revenue', mixMetric = 'revenue', hidden = {}, showTrendTable = false, preset = '30';
+
+// ---------- theme ----------
 try { const t = localStorage.getItem('wiper_theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
 $('themeBtn').onclick = () => {
   const dark = document.documentElement.dataset.theme ? document.documentElement.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
   document.documentElement.dataset.theme = dark ? 'light' : 'dark';
   try { localStorage.setItem('wiper_theme', document.documentElement.dataset.theme); } catch (e) {}
-  if (data) render();
+  if (data) render(false);
 };
 
-// ---- filters ----
+// ---------- tooltip (any element with data-tip holds escaped HTML) ----------
+const tip = $('tip');
+function placeTip(x, y) {
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  tip.style.left = Math.min(Math.max(8, x + 14), innerWidth - w - 8) + 'px';
+  tip.style.top = (y - h - 14 < 8 ? y + 18 : y - h - 14) + 'px';
+}
+document.addEventListener('pointermove', e => {
+  const t = e.target.closest && e.target.closest('[data-tip]');
+  if (!t) { tip.classList.remove('on'); return; }
+  if (tip.dataset.src !== t.dataset.tip) { tip.innerHTML = t.dataset.tip; tip.dataset.src = t.dataset.tip; }
+  tip.classList.add('on'); placeTip(e.clientX, e.clientY);
+});
+document.addEventListener('scroll', () => tip.classList.remove('on'), {passive: true});
+const tipRow = (label, value, color) => `<div class='r'><span>${color ? `<i class='dot' style='background:var(${color})'></i>` : ''}${esc(label)}</span><b style='display:inline;margin:0'>${esc(value)}</b></div>`;
+const attr = s => s.replace(/"/g, '&quot;');
+
+// ---------- count-up ----------
+function countUp(el, to, fmt) {
+  if (reduced || !isFinite(to)) { el.textContent = fmt(to); return; }
+  const t0 = performance.now(), dur = 800;
+  const step = now => { const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3); el.textContent = fmt(to * e); if (k < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+
+// ---------- filters ----------
 const iso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-function applyPreset() {
-  const p = $('fPreset').value, t = new Date(); let f = new Date(t), to = new Date(t);
-  if (p === 'custom') return;
-  if (p === 'today') {}
-  else if (p === '7' || p === '30') f.setDate(t.getDate() - (+p - 1));
+function applyPreset(p) {
+  preset = p; const t = new Date(); let f = new Date(t), to = new Date(t);
+  if (p === '7' || p === '30' || p === '90') f.setDate(t.getDate() - (+p - 1));
   else if (p === 'month') f = new Date(t.getFullYear(), t.getMonth(), 1);
   else if (p === 'lastmonth') { f = new Date(t.getFullYear(), t.getMonth() - 1, 1); to = new Date(t.getFullYear(), t.getMonth(), 0); }
   else if (p === 'ytd') f = new Date(t.getFullYear(), 0, 1);
+  else if (p === 'all') f = data && data.first_date ? new Date(data.first_date + 'T00:00') : new Date(t.getFullYear(), 0, 1);
   $('fFrom').value = iso(f); $('fTo').value = iso(to);
+  document.querySelectorAll('#presets button').forEach(b => b.setAttribute('aria-pressed', b.dataset.p === p));
 }
-$('fPreset').onchange = () => { applyPreset(); load(); };
-['fFrom', 'fTo'].forEach(id => $(id).onchange = () => { $('fPreset').value = 'custom'; load(); });
+document.querySelectorAll('#presets button').forEach(b => b.onclick = () => { applyPreset(b.dataset.p); load(); });
+['fFrom', 'fTo'].forEach(id => $(id).onchange = () => { preset = 'custom'; document.querySelectorAll('#presets button').forEach(b => b.setAttribute('aria-pressed', 'false')); load(); });
 $('fSku').onchange = () => { $('fVar').value = ''; fillVariations(); load(); };
 $('fVar').onchange = load; $('fBucket').onchange = load;
 $('mRevenue').onclick = () => setMetric('revenue'); $('mUnits').onclick = () => setMetric('units');
 function setMetric(m) { metric = m; $('mRevenue').setAttribute('aria-pressed', m === 'revenue'); $('mUnits').setAttribute('aria-pressed', m === 'units'); renderTrend(); }
-$('trendTableBtn').onclick = () => { showTrendTable = !showTrendTable; $('trendTable').hidden = !showTrendTable; $('trendTableBtn').textContent = showTrendTable ? 'Hide table' : 'Table'; };
+$('mixRev').onclick = () => { mixMetric = 'revenue'; $('mixRev').setAttribute('aria-pressed', true); $('mixUnits').setAttribute('aria-pressed', false); renderMix(); };
+$('mixUnits').onclick = () => { mixMetric = 'units'; $('mixRev').setAttribute('aria-pressed', false); $('mixUnits').setAttribute('aria-pressed', true); renderMix(); };
+$('trendTableBtn').onclick = () => { showTrendTable = !showTrendTable; $('trendTable').hidden = !showTrendTable; $('trendTableBtn').textContent = t(showTrendTable ? 'hideTable' : 'table'); };
 $('lType').onchange = renderLedger; $('lSearch').oninput = renderLedger;
 
 function fillVariations() {
   if (!data) return;
   const cur = $('fVar').value, sku = $('fSku').value;
-  $('fVar').innerHTML = '<option value="">All</option>' + data.variations.filter(v => !sku || v.sku === sku)
-    .map(v => `<option value="${esc(v.code)}">${esc(v.code)} · ${esc(v.packaging)}</option>`).join('');
+  $('fVar').innerHTML = `<option value="">${esc(t('allPack'))}</option>` + data.variations.filter(v => !sku || v.sku === sku)
+    .map(v => `<option value="${esc(v.code)}">${esc(v.code)} · ${esc(packName(v.packaging))}</option>`).join('');
   $('fVar').value = cur;
 }
 
@@ -243,172 +582,353 @@ async function load() {
   try {
     const r = await fetch('api.php?' + q); const j = await r.json();
     if (!j.ok) throw new Error(j.error || 'Failed');
-    data = j; fillVariations(); render();
-  } catch (e) { $('asOf').textContent = 'Could not load data: ' + e.message; }
+    const first = !data; data = j; fillVariations(); render(first || true);
+  } catch (e) { $('asOf').textContent = t('loadFail') + e.message; }
 }
 
-// ---- rendering ----
+// ---------- helpers ----------
+function niceStep(v) { if (v <= 0) return 1; const e = Math.pow(10, Math.floor(Math.log10(v))), f = v / e; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * e; }
+const fmtD = d => new Date(d + 'T00:00').toLocaleDateString(LOC(), {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'});
+const fmtShort = d => new Date(d + 'T00:00').toLocaleDateString(LOC(), {day: 'numeric', month: 'short'});
+const bucketLabel = k => data.range.bucket === 'month' ? new Date(k + '-01T00:00').toLocaleDateString(LOC(), {month: 'short', year: 'numeric'}) : (data.range.bucket === 'week' ? t('wk') : '') + fmtShort(k);
+const pctChange = (c, p) => p ? (c - p) / Math.abs(p) * 100 : null;
+const inRange = () => data.daily.filter(d => d.date >= data.range.from && d.date <= data.range.to);
+function sparkSvg(values, color, {h = 34, fill = true, w = 200} = {}) {
+  if (!values.length || values.every(v => !v)) return `<svg viewBox="0 0 ${w} ${h}"><line x1="0" x2="${w}" y1="${h - 1}" y2="${h - 1}" stroke="${css('--grid')}" stroke-width="2"/></svg>`;
+  const max = Math.max(...values), n = values.length, dx = n > 1 ? w / (n - 1) : w;
+  const pts = values.map((v, i) => [i * dx, h - 2 - (max ? v / max : 0) * (h - 6)]);
+  const d = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join('');
+  const gid = 'g' + Math.random().toString(36).slice(2, 8);
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity=".28"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>`
+    + (fill ? `<path d="${d}L${w},${h}L0,${h}Z" fill="url(#${gid})"/>` : '') + `<path class="line" d="${d}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`;
+}
+function activeSkus() { return ['U01', 'U02'].filter(s => !data.filter.sku || data.filter.sku === s); }
+
+// ---------- render ----------
 function render() {
   const d = data;
-  $('asOf').textContent = d.data_updated_at ? 'Data as of ' + new Date(d.data_updated_at).toLocaleString('en-GB', {dateStyle: 'medium', timeStyle: 'short'}) : 'No data loaded yet';
-  $('notice').innerHTML = d.variations.length ? '' : '<div class="notice">No products or stock have been loaded yet. An admin needs to load the opening stock from the Admin page.</div>';
-  renderKpis(); renderTrend(); renderVar(); renderCust(); renderTiers(); renderStock(); renderLedger();
+  $('asOf').textContent = d.data_updated_at ? t('updated', {d: new Date(d.data_updated_at).toLocaleString(LOC(), {day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'})}) : t('noData');
+  $('periodChip').textContent = `${fmtShort(d.range.from)} – ${fmtShort(d.range.to)} · ${t('nDays', {n: d.range.days})}`;
+  $('notice').innerHTML = d.variations.length ? '' : `<div class="notice">${esc(t('notice'))}</div>`;
+  renderHero(); renderKpis(); renderHighlights(); renderTrend(); renderCum(); renderMix(); renderDow(); renderHeat();
+  renderStock(); renderPrice(); renderCust(); renderTiers(); renderLedger();
 }
 
-function delta(cur, prev) {
-  if (!prev) return cur ? '<span class="muted">no sales in previous period</span>' : '<span class="muted">—</span>';
-  const p = (cur - prev) / Math.abs(prev) * 100, up = p >= 0;
-  return `<span class="${up ? 'up' : 'down'}">${up ? '▲' : '▼'} ${Math.abs(p).toFixed(1)}%</span> vs previous ${data.range.days} d`;
+function renderHero() {
+  const c = data.kpis.current, p = data.kpis.previous, ch = pctChange(c.revenue, p.revenue);
+  const big = $('heroRevenue'); big.innerHTML = '<small>GHS</small><span></span>';
+  countUp(big.querySelector('span'), c.revenue / 100, v => Math.round(v).toLocaleString('en-GH'));
+  const hd = $('heroDelta');
+  hd.className = 'pill' + (ch === null ? '' : ch >= 0 ? ' up' : ' down');
+  hd.textContent = ch === null ? t(c.revenue ? 'firstSales' : 'noSalesYet') : `${ch >= 0 ? '▲' : '▼'} ${Math.abs(ch).toFixed(0)}% ${t('vsPrevN', {n: data.range.days})}`;
+  $('heroSub').textContent = c.revenue ? t('heroSub', {u: num(c.units), l: num(c.lines), m: ghs0(c.margin)}) + (c.discount ? t('heroDisc', {d: ghs0(c.discount)}) : '') : t('heroNone');
+  $('heroSpark').innerHTML = sparkSvg(cumulative(inRange().map(x => x.revenue)), 'rgba(255,255,255,.95)', {h: 54, w: 400});
+  const P = data.series.products;
+  const tot = { U01: P.U01.revenue.reduce((a, b) => a + b, 0), U02: P.U02.revenue.reduce((a, b) => a + b, 0) };
+  const units = { U01: P.U01.units.reduce((a, b) => a + b, 0), U02: P.U02.units.reduce((a, b) => a + b, 0) };
+  const all = tot.U01 + tot.U02;
+  const stockBy = s => data.stock.filter(x => x.sku === s).reduce((a, x) => a + x.on_hand, 0);
+  ['U01', 'U02'].forEach(s => {
+    const el = $('pc' + s), share = all ? tot[s] / all * 100 : 0, dim = data.filter.sku && data.filter.sku !== s;
+    el.style.opacity = dim ? .45 : 1;
+    el.innerHTML = `<div class="ph"><i class="dot" style="background:var(${PRODUCTS[s].color});outline:2px solid rgba(255,255,255,.6)"></i>${esc(pname(s))}</div>
+      <div class="pv"><span data-c></span></div>
+      <div class="pm"><span>${esc(t('nSold', {n: num(units[s]), u: punit(s)}))}</span><span>${esc(dim ? t('filteredOut') : t('pctRevenue', {p: share.toFixed(0)}))}</span></div>
+      <div class="share-track" aria-hidden="true"><span></span></div>
+      <div class="pm"><span>${esc(t('inStock'))}</span><span>${dim ? '—' : num(stockBy(s)) + ' ' + esc(punit(s))}</span></div>`;
+    countUp(el.querySelector('[data-c]'), tot[s] / 100, v => 'GHS ' + Math.round(v).toLocaleString('en-GH'));
+    requestAnimationFrame(() => requestAnimationFrame(() => { el.querySelector('.share-track span').style.width = (dim ? 0 : share) + '%'; }));
+  });
+}
+const cumulative = a => { let s = 0; return a.map(v => s += v); };
+
+function deltaHtml(cur, prev, invert) {
+  const ch = pctChange(cur, prev);
+  if (ch === null) return cur ? `<span class="muted">${esc(t('newPeriod'))}</span>` : '<span class="muted">—</span>';
+  const good = invert ? ch <= 0 : ch >= 0;
+  return `<span class="delta ${good ? 'up' : 'down'}">${ch >= 0 ? '▲' : '▼'} ${Math.abs(ch).toFixed(1)}%</span> <span class="muted">${esc(t('vsPrev'))}</span>`;
 }
 function renderKpis() {
-  const c = data.kpis.current, p = data.kpis.previous, s = data.kpis.stock;
-  const marginPct = c.revenue ? ` (${(c.margin / c.revenue * 100).toFixed(0)}%)` : '';
+  const c = data.kpis.current, p = data.kpis.previous, s = data.kpis.stock, days = inRange();
+  const mPct = c.revenue ? c.margin / c.revenue * 100 : 0, real = c.list ? c.revenue / c.list * 100 : 0;
+  const avgPc = c.units ? c.revenue / c.units : 0;
+  const packs = data.stock.reduce((a, x) => a + x.packs, 0);
   const tiles = [
-    ['Revenue', ghs0(c.revenue), delta(c.revenue, p.revenue)],
-    ['Units sold', num(c.units), delta(c.units, p.units)],
-    ['Gross margin', ghs0(c.margin), delta(c.margin, p.margin) + '<br>' + esc(marginPct.trim())],
-    ['Orders', num(c.orders), delta(c.orders, p.orders)],
-    ['Stock on hand', num(s.pieces) + ' pcs', '<span class="muted">today, selected products</span>'],
-    ['Stock value at cost', ghs0(s.value_cost), '<span class="muted">today</span>'],
-    ['Stock value at retail', ghs0(s.value_retail), '<span class="muted">today</span>'],
+    {label: t('kPieces'), value: c.units, fmt: v => num(Math.round(v)), small: t('pcs'), foot: deltaHtml(c.units, p.units), spark: days.map(d => d.units), color: '--s1'},
+    {label: t('kMargin'), value: c.margin / 100, fmt: v => 'GHS ' + Math.round(v).toLocaleString('en-GH'), foot: `${esc(t('pctRevenue', {p: mPct.toFixed(0)}))} · ${deltaHtml(c.margin, p.margin)}`, meter: mPct},
+    {label: t('kAvg'), value: avgPc / 100, fmt: v => 'GHS ' + v.toFixed(2), foot: c.list ? esc(t('ofList', {p: real.toFixed(1)})) : `<span class="muted">${esc(t('noSales'))}</span>`, meter: real, meterTip: t('avgTip')},
+    {label: t('kDisc'), value: c.discount / 100, fmt: v => 'GHS ' + v.toFixed(2), foot: c.revenue ? esc(t('ofGross', {p: (c.discount / (c.revenue + c.discount) * 100).toFixed(1)})) : '<span class="muted">—</span>'},
+    {label: t('kLines'), value: c.lines, fmt: v => num(Math.round(v)), foot: c.lines ? `${esc(t('avgLine', {a: ghs0(c.revenue / c.lines)}))} · ${deltaHtml(c.lines, p.lines)}` : deltaHtml(c.lines, p.lines), spark: null},
+    {label: t('kStock'), value: s.pieces, fmt: v => num(Math.round(v)), small: t('pcs'), foot: esc(t('fullPacks', {n: num(packs)}))},
+    {label: t('kCost'), value: s.value_cost / 100, fmt: v => 'GHS ' + Math.round(v).toLocaleString('en-GH'), foot: esc(t('tiedUp'))},
+    {label: t('kRetail'), value: s.value_retail / 100, fmt: v => 'GHS ' + Math.round(v).toLocaleString('en-GH'), foot: s.value_cost ? esc(t('potMargin', {m: ghs0(s.value_retail - s.value_cost)})) : ''},
   ];
-  $('kpis').innerHTML = tiles.map(([l, v, dl]) => `<div class="kpi"><div class="label">${l}</div><div class="value">${v}</div><div class="delta">${dl}</div></div>`).join('');
+
+  $('kpis').innerHTML = tiles.map((k, i) => `<div class="card kpi"><div class="top"><span class="label">${esc(k.label)}</span></div>
+    <div class="value"><span data-k="${i}"></span>${k.small ? `<small>${esc(k.small)}</small>` : ''}</div>
+    <div class="foot">${k.foot}</div>
+    ${k.meter !== undefined ? `<div class="meter" ${k.meterTip ? `data-tip="${attr(esc(k.meterTip))}"` : ''}><span data-m="${Math.max(0, Math.min(100, k.meter))}"></span></div>` : ''}
+    ${k.spark ? `<div class="spark" aria-hidden="true">${sparkSvg(k.spark, css(k.color))}</div>` : ''}</div>`).join('');
+  tiles.forEach((k, i) => countUp($('kpis').querySelector(`[data-k="${i}"]`), k.value, k.fmt));
+  requestAnimationFrame(() => requestAnimationFrame(() => $('kpis').querySelectorAll('[data-m]').forEach(m => m.style.width = m.dataset.m + '%')));
 }
 
-function niceMax(v) {
-  if (v <= 0) return metric === 'revenue' ? 100 : 1;
-  const e = Math.pow(10, Math.floor(Math.log10(v))), f = v / e;
-  return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * e;
+function renderHighlights() {
+  const days = inRange(), c = data.kpis.current, cards = [];
+  const best = days.reduce((a, d) => d.revenue > (a ? a.revenue : 0) ? d : a, null);
+  if (best) cards.push(['🏆', t('hBest'), ghs0(best.revenue), `${fmtD(best.date)} · ${t('nPieces', {n: num(best.units)})}`]);
+  const top = data.by_variation[0];
+  if (top) cards.push(['⭐', t('hTop'), `${top.code} · ${packShort(top.packaging)}`, t('hTopD', {r: ghs0(top.revenue), n: num(top.units), p: c.revenue ? (top.revenue / c.revenue * 100).toFixed(0) : 0})]);
+  const bd = data.dow.map((d, i) => ({...d, i})).filter(d => d.revenue > 0).sort((a, b) => b.revenue - a.revenue)[0];
+  if (bd) cards.push(['📅', t('hDow'), dowLong(bd.i), t('hDowD', {r: ghs0(bd.revenue), n: bd.days, d: dowLong(bd.i)})]);
+  const active = days.filter(d => d.revenue > 0).length;
+  if (days.length) cards.push(['🔥', t('hDays'), t('hDaysV', {a: active, b: days.length}), active ? t('hDaysD', {r: ghs0(c.revenue / active)}) : t('noSalesYet')]);
+  const low = data.stock.filter(s => s.low);
+  const soonest = data.stock.filter(s => s.days_cover !== null).sort((a, b) => a.days_cover - b.days_cover)[0];
+  if (low.length) cards.push(['⚠️', t('hLow'), low.map(s => s.code).join(', '), t('hLowD')]);
+  else if (soonest) cards.push(['✅', t('hHealthy'), t('hHealthyV', {c: soonest.code}), t('hHealthyD', {n: num(Math.round(soonest.days_cover))})]);
+  const idle = data.stock.filter(s => s.on_hand > 0 && !s.avg28);
+  if (idle.length) cards.push(['🐢', t('hSlow'), t('hSlowV', {n: idle.length}), t('hSlowD', {c: idle.map(s => s.code).join(', '), v: ghs0(idle.reduce((a, s) => a + s.value_cost, 0))})]);
+  const st = data.stock.filter(s => s.received > 0).map(s => ({...s, r: s.sold_total / s.received})).sort((a, b) => b.r - a.r)[0];
+  if (st && st.sold_total) cards.push(['🚀', t('hSell'), `${st.code} · ${(st.r * 100).toFixed(1)}%`, t('hSellD', {a: num(st.sold_total), b: num(st.received)})]);
+  if (c.discount) cards.push(['🏷️', t('hDisc'), ghs(c.discount), t('hDiscD', {g: ghs0(c.revenue + c.discount)})]);
+  $('highlights').innerHTML = cards.length ? cards.map(([e, ti, v, d]) => `<div class="card hl"><div class="emo" aria-hidden="true">${e}</div><div><div class="t">${esc(ti)}</div><div class="v">${esc(v)}</div><div class="d">${esc(d)}</div></div></div>`).join('')
+    : `<div class="card hl"><div class="emo">👋</div><div><div class="t">${esc(t('hWelcome'))}</div><div class="v">${esc(t('noSalesYet'))}</div><div class="d">${esc(t('hWelcomeD'))}</div></div></div>`;
 }
-function fmtMetric(v) { return metric === 'revenue' ? ghs0(v) : num(v); }
-function fmtAxis(v) {
-  const x = metric === 'revenue' ? v / 100 : v;
-  const s = x >= 1e6 ? (x / 1e6).toFixed(x % 1e6 ? 1 : 0) + 'M' : x >= 1e3 ? (x / 1e3).toFixed(x % 1e3 ? 1 : 0) + 'k' : String(Math.round(x));
-  return s;
-}
-function activeSkus() { return ['U01', 'U02'].filter(s => (!data.filter.sku || data.filter.sku === s)); }
 
+// ---------- charts ----------
+function axisY(svgParts, max, m, W, ih, fmt) {
+  const step = max / 4;
+  for (let k = 0; k <= 4; k++) {
+    const y = m.t + ih - ih * k / 4;
+    svgParts.push(`<line x1="${m.l}" x2="${W - m.r}" y1="${y}" y2="${y}" stroke="${css(k ? '--grid' : '--axis')}" stroke-width="1"/>`);
+    svgParts.push(`<text x="${m.l - 8}" y="${y + 4}" text-anchor="end" font-size="11" fill="${css('--muted')}" class="num">${fmt(step * k)}</text>`);
+  }
+}
 function renderTrend() {
   const b = data.series.buckets, skus = activeSkus(), P = data.series.products;
-  $('trendSub').textContent = `${data.range.from} to ${data.range.to} · by ${data.range.bucket} · ${metric === 'revenue' ? 'GHS' : 'pieces'}`;
-  $('trendLegend').innerHTML = skus.length > 1 ? skus.map(s => `<button type="button" data-sku="${s}" aria-pressed="${!hidden[s]}"><span class="sw" style="background:var(${PRODUCTS[s].color})"></span>${PRODUCTS[s].name}</button>`).join('') : '';
+  $('trendSub').textContent = `${fmtShort(data.range.from)} – ${fmtShort(data.range.to)} · ${t('by_' + data.range.bucket)} · ${metric === 'revenue' ? 'GHS' : t('piecesW')}`;
+  $('trendLegend').innerHTML = skus.length > 1 ? skus.map(s => `<button type="button" data-sku="${s}" aria-pressed="${!hidden[s]}"><span class="dot" style="background:var(${PRODUCTS[s].color})"></span>${esc(pname(s))}</button>`).join('') : '';
   $('trendLegend').querySelectorAll('button').forEach(btn => btn.onclick = () => { hidden[btn.dataset.sku] = !hidden[btn.dataset.sku]; renderTrend(); });
   const shown = skus.filter(s => !hidden[s]);
   const totals = b.map((_, i) => shown.reduce((a, s) => a + P[s][metric][i], 0));
   const el = $('trendChart');
-  const W = Math.max(300, el.clientWidth || 600), H = W < 500 ? 220 : 280, m = {t: 12, r: 8, b: 28, l: 52};
-  const iw = W - m.l - m.r, ih = H - m.t - m.b, max = 4 * niceMax(Math.max(...totals, 0) / 4);
-  const step = iw / Math.max(1, b.length), bw = Math.max(2, Math.min(48, step * 0.66));
-  let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Sales trend chart">`;
-  for (let k = 0; k <= 4; k++) {
-    const y = m.t + ih - ih * k / 4;
-    svg += `<line x1="${m.l}" x2="${W - m.r}" y1="${y}" y2="${y}" stroke="${css('--grid')}" stroke-width="1"/>`;
-    svg += `<text x="${m.l - 6}" y="${y + 4}" text-anchor="end" font-size="11" fill="${css('--muted')}">${fmtAxis(max * k / 4)}</text>`;
-  }
-  const every = Math.ceil(b.length / Math.max(1, Math.floor(iw / 64)));
-  b.forEach((bk, i) => { svg += `<rect class="hl" data-i="${i}" x="${m.l + step * i}" y="${m.t}" width="${step}" height="${ih}" fill="transparent"/>`; });
+  const W = Math.max(300, el.clientWidth || 600), H = W < 500 ? 220 : 290, m = {t: 14, r: 6, b: 28, l: 48};
+  const iw = W - m.l - m.r, ih = H - m.t - m.b, max = 4 * niceStep(Math.max(...totals, 0) / 4 || (metric === 'revenue' ? 25 : 1));
+  const step = iw / Math.max(1, b.length), bw = Math.max(3, Math.min(42, step * 0.62));
+  const fmtAxis = v => short(metric === 'revenue' ? v / 100 : v);
+  const fmtV = v => metric === 'revenue' ? ghs0(v) : num(v) + ' ' + t('pcs');
+  const parts = [`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Sales trend chart">`];
+  axisY(parts, max, m, W, ih, fmtAxis);
+  const every = Math.ceil(b.length / Math.max(1, Math.floor(iw / 62)));
   b.forEach((bk, i) => {
     const cx = m.l + step * i + step / 2;
+    const tipHtml = `<b>${esc(bucketLabel(bk.key))}</b>` + shown.map(s => tipRow(pname(s), fmtV(P[s][metric][i]), PRODUCTS[s].color)).join('') + (shown.length > 1 ? tipRow(t('total'), fmtV(totals[i])) : '');
+    parts.push(`<g data-tip="${attr(tipHtml)}"><rect x="${m.l + step * i}" y="${m.t}" width="${step}" height="${ih}" fill="transparent" class="hitcol"/>`);
     let y0 = m.t + ih;
     shown.forEach((s, si) => {
       const v = P[s][metric][i]; if (!v) return;
-      const h = Math.max(1, v / max * ih), isTop = !shown.slice(si + 1).some(t => P[t][metric][i]);
-      const x = cx - bw / 2, y = y0 - h, r = isTop ? Math.min(4, bw / 2, h) : 0;
-      const gap = isTop ? 0 : 2;
-      svg += `<path d="M${x},${y0} V${y + r + gap} ${r ? `Q${x},${y + gap} ${x + r},${y + gap} H${x + bw - r} Q${x + bw},${y + gap} ${x + bw},${y + r + gap}` : `H${x + bw}`} V${y0} Z" fill="${css(PRODUCTS[s].color)}"/>`;
+      const h = Math.max(1.5, v / max * ih), isTop = !shown.slice(si + 1).some(t => P[t][metric][i]);
+      const x = cx - bw / 2, y = y0 - h, r = isTop ? Math.min(4, bw / 2, h) : 0, gap = isTop ? 0 : 2;
+      parts.push(`<path class="bar" style="animation-delay:${Math.min(i * 12, 400)}ms" d="M${x},${y0} V${y + r + gap} ${r ? `Q${x},${y + gap} ${x + r},${y + gap} H${x + bw - r} Q${x + bw},${y + gap} ${x + bw},${y + r + gap}` : `H${x + bw}`} V${y0} Z" fill="${css(PRODUCTS[s].color)}"/>`);
       y0 = y;
     });
-    if (i % every === 0) svg += `<text x="${cx}" y="${H - 8}" text-anchor="middle" font-size="11" fill="${css('--muted')}">${esc(bk.label)}</text>`;
-    svg += `<rect class="hit" data-i="${i}" x="${m.l + step * i}" y="${m.t}" width="${step}" height="${ih}" fill="transparent"/>`;
+    parts.push('</g>');
+    if (i % every === 0) parts.push(`<text x="${cx}" y="${H - 8}" text-anchor="middle" font-size="11" fill="${css('--muted')}">${esc(bucketLabel(bk.key))}</text>`);
   });
-  svg += `<line x1="${m.l}" x2="${W - m.r}" y1="${m.t + ih}" y2="${m.t + ih}" stroke="${css('--muted')}" stroke-width="1"/></svg><div class="tip" id="trendTip"></div>`;
-  el.innerHTML = totals.some(v => v) ? svg : '<div class="empty">No sales in this period.</div>';
-  const tip = $('trendTip');
-  el.querySelectorAll('.hit').forEach(r => {
-    const show = ev => {
-      const i = +r.dataset.i;
-      tip.innerHTML = `<b>${esc(b[i].label)}</b>` + shown.map(s => `<div class="row"><span><span class="sw" style="background:var(${PRODUCTS[s].color})"></span> ${PRODUCTS[s].name}</span><span>${fmtMetric(P[s][metric][i])}</span></div>`).join('')
-        + (shown.length > 1 ? `<div class="row"><span>Total</span><b style="display:inline">${fmtMetric(totals[i])}</b></div>` : '');
-      tip.style.display = 'block';
-      const box = el.getBoundingClientRect(), x = (ev.clientX ?? box.left) - box.left;
-      tip.style.left = Math.min(Math.max(0, x + 12), box.width - tip.offsetWidth) + 'px'; tip.style.top = '8px';
-      el.querySelector(`.hl[data-i="${i}"]`).setAttribute('fill', css('--grid'));
-    };
-    r.addEventListener('mousemove', show); r.addEventListener('click', show);
-    r.addEventListener('mouseleave', () => { tip.style.display = 'none'; el.querySelector(`.hl[data-i="${r.dataset.i}"]`).setAttribute('fill', 'transparent'); });
-  });
-  // table view
-  const cols = [{k: 'label', t: 'Period'}, ...skus.flatMap(s => [{k: s + 'r', t: s + ' revenue', f: ghs, n: 1}, {k: s + 'u', t: s + ' units', f: num, n: 1}]), {k: 'tr', t: 'Total revenue', f: ghs, n: 1}];
-  const rows = b.map((bk, i) => { const o = {label: bk.label, tr: 0}; skus.forEach(s => { o[s + 'r'] = P[s].revenue[i]; o[s + 'u'] = P[s].units[i]; o.tr += P[s].revenue[i]; }); return o; });
+  parts.push('</svg>');
+  el.innerHTML = totals.some(v => v) ? parts.join('') : `<div class="empty">${esc(t('noSalesPeriod'))}</div>`;
+  el.querySelectorAll('g[data-tip]').forEach(g => { g.addEventListener('pointerenter', () => g.querySelector('.hitcol').setAttribute('fill', css('--surface-2'))); g.addEventListener('pointerleave', () => g.querySelector('.hitcol').setAttribute('fill', 'transparent')); });
+  const cols = [{k: 'label', t: t('cPeriod')}, ...skus.flatMap(s => [{k: s + 'r', t: s + ' ' + t('revenue'), f: ghs, n: 1}, {k: s + 'u', t: s + ' ' + t('units'), f: num, n: 1}]), {k: 'tr', t: t('cTotalRev'), f: ghs, n: 1}];
+  const rows = b.map((bk, i) => { const o = {label: bucketLabel(bk.key), tr: 0}; skus.forEach(s => { o[s + 'r'] = P[s].revenue[i]; o[s + 'u'] = P[s].units[i]; o.tr += P[s].revenue[i]; }); return o; });
   table('trendTable', cols, rows, null, 'trendCsv', 'sales-trend');
+}
+
+function renderCum() {
+  const cur = inRange(), n = cur.length, r = data.range;
+  const prevDays = data.daily.filter(d => d.date >= r.prev_from && d.date <= r.prev_to);
+  const hasPrev = prevDays.length === n && data.daily[0].date <= r.prev_from;
+  const a = cumulative(cur.map(d => d.revenue)), pv = hasPrev ? cumulative(prevDays.map(d => d.revenue)) : [];
+  const el = $('cumChart');
+  $('cumLegend').innerHTML = `<span style="display:inline-flex;gap:6px;align-items:center"><span class="dot" style="background:var(--accent)"></span>${esc(t('thisPeriod'))}</span>` + (hasPrev ? `<span style="display:inline-flex;gap:6px;align-items:center"><span class="dash"></span>${esc(t('prevNDays', {n}))}</span>` : '');
+  if (!a.length || !a[n - 1] && !(pv[n - 1])) { el.innerHTML = `<div class="empty">${esc(t('noSalesPeriod'))}</div>`; return; }
+  const W = Math.max(260, el.clientWidth || 400), H = W < 500 ? 220 : 290, m = {t: 14, r: 10, b: 28, l: 48};
+  const iw = W - m.l - m.r, ih = H - m.t - m.b, max = 4 * niceStep(Math.max(a[n - 1] || 0, pv[n - 1] || 0) / 4 || 25);
+  const X = i => m.l + (n > 1 ? i / (n - 1) * iw : iw / 2), Y = v => m.t + ih - v / max * ih;
+  const path = arr => arr.map((v, i) => (i ? 'L' : 'M') + X(i).toFixed(1) + ',' + Y(v).toFixed(1)).join('');
+  const parts = [`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Cumulative revenue chart"><defs><linearGradient id="cumg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${css('--accent')}" stop-opacity=".25"/><stop offset="1" stop-color="${css('--accent')}" stop-opacity="0"/></linearGradient></defs>`];
+  axisY(parts, max, m, W, ih, v => short(v / 100));
+  if (hasPrev) parts.push(`<path d="${path(pv)}" fill="none" stroke="${css('--muted')}" stroke-width="2" stroke-dasharray="5 5"/>`);
+  parts.push(`<path d="${path(a)}L${X(n - 1)},${m.t + ih}L${X(0)},${m.t + ih}Z" fill="url(#cumg)"/>`);
+  parts.push(`<path class="line" d="${path(a)}" fill="none" stroke="${css('--accent')}" stroke-width="2.5" stroke-linejoin="round"/>`);
+  parts.push(`<circle cx="${X(n - 1)}" cy="${Y(a[n - 1])}" r="5" fill="${css('--accent')}" stroke="${css('--surface')}" stroke-width="2"/>`);
+  parts.push(`<text x="${Math.min(X(n - 1), W - m.r)}" y="${Math.max(12, Y(a[n - 1]) - 10)}" text-anchor="end" font-size="12" font-weight="700" fill="${css('--text')}">${esc(ghs0(a[n - 1]))}</text>`);
+  [0, Math.floor((n - 1) / 2), n - 1].filter((v, i, s) => s.indexOf(v) === i).forEach(i => parts.push(`<text x="${X(i)}" y="${H - 8}" text-anchor="${i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle'}" font-size="11" fill="${css('--muted')}">${esc(fmtShort(cur[i].date))}</text>`));
+  const sw = iw / Math.max(1, n);
+  cur.forEach((d, i) => {
+    const tt = `<b>${esc(fmtD(d.date))}</b>` + tipRow(t('thatDay'), ghs0(d.revenue)) + tipRow(t('runningTotal'), ghs0(a[i]), '--accent') + (hasPrev ? tipRow(t('prevPeriod'), ghs0(pv[i])) : '');
+    parts.push(`<rect x="${X(i) - sw / 2}" y="${m.t}" width="${sw}" height="${ih}" fill="transparent" data-tip="${attr(tt)}"/>`);
+  });
+  parts.push('</svg>');
+  el.innerHTML = parts.join('');
+}
+
+function renderMix() {
+  const rows = data.by_variation.slice().sort((a, b) => b[mixMetric] - a[mixMetric]), el = $('mixChart');
+  if (!rows.length) { el.innerHTML = `<div class="empty">${esc(t('noSalesPeriod'))}</div>`; return; }
+  const W = Math.max(280, el.clientWidth || 500), rowH = 40, lw = W < 420 ? 96 : 150, vw = 92, H = rows.length * rowH + 4;
+  const max = Math.max(...rows.map(r => r[mixMetric])), bw = W - lw - vw - 8, total = rows.reduce((a, r) => a + r[mixMetric], 0);
+  const parts = [`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Packaging mix">`];
+  rows.forEach((r, i) => {
+    const y = i * rowH + 6, w = Math.max(3, r[mixMetric] / max * bw), mp = r.revenue ? (r.revenue - r.cost) / r.revenue * 100 : 0;
+    const name = packShort(r.packaging);
+    const tt = `<b>${esc(r.code)} · ${esc(packName(r.packaging))}</b>` + tipRow(t('revenue'), ghs(r.revenue), PRODUCTS[r.sku].color) + tipRow(t('pieces'), num(r.units)) + tipRow(t('margin'), mp.toFixed(0) + '%') + tipRow(t('share'), (r[mixMetric] / total * 100).toFixed(1) + '%');
+    parts.push(`<g data-tip="${attr(tt)}"><rect x="0" y="${y - 4}" width="${W}" height="${rowH - 4}" fill="transparent"/>`
+      + `<text x="0" y="${y + 13}" font-size="13" font-weight="650" fill="${css('--text')}">${esc(r.code)}</text><text x="34" y="${y + 13}" font-size="12.5" fill="${css('--text-2')}">${esc(name.length > (lw < 120 ? 9 : 16) ? name.slice(0, lw < 120 ? 8 : 15) + '…' : name)}</text>`
+      + `<rect class="hbar" style="animation-delay:${i * 60}ms" x="${lw}" y="${y}" width="${w}" height="18" rx="5" fill="${css(PRODUCTS[r.sku].color)}"/>`
+      + `<text x="${W}" y="${y + 13}" text-anchor="end" font-size="12.5" font-weight="650" fill="${css('--text')}" class="num">${esc(mixMetric === 'revenue' ? ghs0(r.revenue) : num(r.units))}</text>`
+      + `<text x="${W}" y="${y + 29}" text-anchor="end" font-size="11" fill="${css('--muted')}">${(r[mixMetric] / total * 100).toFixed(0)}% · ${esc(t('pctMargin', {p: mp.toFixed(0)}))}</text></g>`);
+  });
+  parts.push('</svg>');
+  el.innerHTML = parts.join('');
+}
+
+function renderDow() {
+  const d = data.dow, el = $('dowChart'), vals = d.map(x => x.revenue), best = vals.indexOf(Math.max(...vals));
+  if (!vals.some(v => v)) { el.innerHTML = `<div class="empty">${esc(t('noSalesPeriod'))}</div>`; $('dowSub').textContent = t('dowSub'); return; }
+  $('dowSub').textContent = t('dowSub') + ' · ' + t('dowLeads', {d: dowLong(best)});
+  const W = Math.max(260, el.clientWidth || 400), H = 230, m = {t: 22, r: 4, b: 26, l: 4}, iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const max = Math.max(...vals), step = iw / 7, bw = Math.min(46, step * 0.6);
+  const parts = [`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Revenue by weekday">`, `<line x1="${m.l}" x2="${W - m.r}" y1="${m.t + ih}" y2="${m.t + ih}" stroke="${css('--axis')}"/>`];
+  d.forEach((x, i) => {
+    const h = x.revenue ? Math.max(3, x.revenue / max * ih) : 0, cx = m.l + step * i + step / 2, y = m.t + ih - h, r = Math.min(6, bw / 2, h);
+    const tt = `<b>${esc(dowLong(i))}</b>` + tipRow(t('revenue'), ghs0(x.revenue), i === best ? '--accent' : '--heat-2') + tipRow(t('pieces'), num(x.units)) + tipRow(t('daysInPeriod', {d: dowLong(i)}), num(x.days)) + tipRow(t('avgPer', {d: dowLong(i)}), ghs0(x.days ? x.revenue / x.days : 0));
+    parts.push(`<g data-tip="${attr(tt)}"><rect x="${cx - step / 2}" y="${m.t - 20}" width="${step}" height="${ih + 20}" fill="transparent"/>`);
+    if (h) parts.push(`<path class="bar" style="animation-delay:${i * 50}ms" d="M${cx - bw / 2},${m.t + ih} V${y + r} Q${cx - bw / 2},${y} ${cx - bw / 2 + r},${y} H${cx + bw / 2 - r} Q${cx + bw / 2},${y} ${cx + bw / 2},${y + r} V${m.t + ih} Z" fill="${css(i === best ? '--accent' : '--heat-2')}"/>`);
+    if (h) parts.push(`<text x="${cx}" y="${y - 6}" text-anchor="middle" font-size="11" font-weight="${i === best ? 700 : 500}" fill="${css(i === best ? '--text' : '--muted')}">${short(x.revenue / 100)}</text>`);
+    parts.push(`<text x="${cx}" y="${H - 7}" text-anchor="middle" font-size="12" font-weight="${i === best ? 700 : 500}" fill="${css(i === best ? '--text' : '--muted')}">${esc(dow(i))}</text></g>`);
+  });
+  parts.push('</svg>');
+  el.innerHTML = parts.join('');
+}
+
+function renderHeat() {
+  const days = data.daily, el = $('heatChart');
+  if (!days.length) { el.innerHTML = ''; return; }
+  const weeks = Math.ceil(days.length / 7), cell = 14, gap = 3, top = 18, left = 30;
+  const W = left + weeks * (cell + gap), H = top + 7 * (cell + gap);
+  const nz = days.map(d => d.revenue).filter(v => v > 0).sort((a, b) => a - b);
+  const q = p => nz.length ? nz[Math.min(nz.length - 1, Math.floor(p * nz.length))] : 0;
+  const cuts = [q(.2), q(.4), q(.6), q(.8)];
+  const level = v => v <= 0 ? 0 : v <= cuts[0] ? 1 : v <= cuts[1] ? 2 : v <= cuts[2] ? 3 : v <= cuts[3] ? 4 : 5;
+  const parts = [`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Daily sales calendar" style="max-width:none">`];
+  [0, 2, 4].forEach(k => parts.push(`<text x="0" y="${top + k * (cell + gap) + 11}" font-size="10" fill="${css('--muted')}">${esc(dow(k))}</text>`));
+  let lastMonth = '';
+  days.forEach((d, i) => {
+    const w = Math.floor(i / 7), dw = i % 7, x = left + w * (cell + gap), y = top + dw * (cell + gap);
+    const mo = d.date.slice(0, 7);
+    if (dw === 0 && mo !== lastMonth) { lastMonth = mo; parts.push(`<text x="${x}" y="11" font-size="10" fill="${css('--muted')}">${new Date(d.date + 'T00:00').toLocaleDateString(LOC(), {month: 'short'})}</text>`); }
+    const inR = d.date >= data.range.from && d.date <= data.range.to;
+    const tt = `<b>${esc(fmtD(d.date))}</b>` + tipRow(t('revenue'), ghs0(d.revenue)) + tipRow(t('pieces'), num(d.units));
+    parts.push(`<rect class="cell" x="${x}" y="${y}" width="${cell}" height="${cell}" rx="3" fill="${css('--heat-' + level(d.revenue))}" ${inR ? '' : 'opacity=".55"'} data-tip="${attr(tt)}"/>`);
+  });
+  parts.push('</svg>');
+  el.innerHTML = parts.join('');
+  const first = days[0].date, last = days[days.length - 1].date;
+  $('heatSub').textContent = t('heatSub', {a: fmtShort(first), b: fmtShort(last)});
+  el.scrollLeft = el.scrollWidth;
+}
+
+// ---------- stock ----------
+function renderStock() {
+  const el = $('stockCards');
+  el.innerHTML = data.stock.length ? data.stock.map(s => {
+    const cov = s.days_cover, covPct = cov === null ? 0 : Math.min(100, cov / 60 * 100);
+    const status = s.low ? ['warn', '⚠ ' + t('sReorder')] : cov === null ? ['idle', '• ' + t('sIdle')] : ['ok', '✓ ' + t('sOk')];
+    const st = s.received ? s.sold_total / s.received * 100 : 0;
+    return `<div class="sc" style="--c:var(${PRODUCTS[s.sku].color})">
+      <div class="h"><div><div class="code">${esc(s.code)} <span class="muted" style="font-weight:500">· ${esc(s.sku)}</span></div><div class="pk">${esc(packName(s.packaging))}</div></div><span class="badge ${status[0]}">${esc(status[1])}</span></div>
+      <div class="oh">${num(s.on_hand)} <small>${esc(t('pcs'))} · ${num(s.packs)} ${esc(t(s.pieces_per_pack > 1 ? 'packs' : 'pcs'))}</small></div>
+      <div class="row"><span>${esc(t('cCover'))}</span><b>${cov === null ? '—' : cov > 999 ? '999+' : num(Math.round(cov))}</b></div>
+      <div class="meter" data-tip="${attr(esc(cov === null ? t('no28') : t('coverTip', {d: Math.round(cov), r: Math.max(s.avg7, s.avg28), o: s.stockout})))}"><span data-m="${covPct}" style="background:var(${s.low ? '--warn' : '--good'})"></span></div>
+      <div class="row"><span>${esc(t('sellThrough'))}</span><b>${st.toFixed(1)}%</b></div>
+      <div class="meter ${s.sku === 'U02' ? 's2' : ''}" data-tip="${attr(esc(t('soldOf', {a: num(s.sold_total), b: num(s.received)})))}"><span data-m="${Math.min(100, st)}"></span></div>
+      <div class="row"><span>${esc(t('valCR'))}</span><b>${ghs0(s.value_cost)} / ${ghs0(s.value_retail)}</b></div>
+      ${s.suggest_packs ? `<div class="row" style="color:var(--warn-text)"><span>${esc(t('suggest'))}</span><b>${num(s.suggest_packs)} ${esc(t('packs'))}</b></div>` : ''}
+    </div>`;
+  }).join('') : `<div class="empty">${esc(t('noStock'))}</div>`;
+  requestAnimationFrame(() => requestAnimationFrame(() => el.querySelectorAll('[data-m]').forEach(m => m.style.width = m.dataset.m + '%')));
+  table('stockTable', [
+    {k: 'code', t: t('cCode')}, {k: 'packaging', t: t('cPack'), f: packName},
+    {k: 'low', t: t('cStatus'), html: r => r.low ? `<span class="badge warn">⚠ ${esc(t('low'))}</span>` : `<span class="badge ok">✓ ${esc(t('ok'))}</span>`, csv: r => r.low ? 'Low' : 'OK'},
+    {k: 'on_hand', t: t('cOnHand'), f: num, n: 1}, {k: 'packs', t: t('cPacks'), f: num, n: 1},
+    {k: 'avg7', t: t('cAvg7'), f: v => v.toFixed(1), n: 1}, {k: 'avg28', t: t('cAvg28'), f: v => v.toFixed(1), n: 1},
+    {k: 'days_cover', t: t('cCover'), f: v => v === null ? t('sIdle') : v.toFixed(0), n: 1},
+    {k: 'stockout', t: t('cStockout'), f: v => v ?? '—'},
+    {k: 'sold_total', t: t('cSoldSince'), f: num, n: 1},
+    {k: 'reorder_level', t: t('cReorderLvl'), f: num, n: 1},
+    {k: 'suggest_packs', t: t('cSuggest'), html: r => r.suggest_packs ? `${num(r.suggest_packs)} ${esc(t('packs'))} (${num(r.suggest_pieces)} ${esc(t('pcs'))})` : '—', csv: r => r.suggest_pieces},
+    {k: 'value_cost', t: t('cValCost'), f: ghs, n: 1}, {k: 'value_retail', t: t('cValRetail'), f: ghs, n: 1},
+  ], data.stock, t('noStock'), 'stockCsv', 'stock-on-hand');
+}
+
+function renderPrice() {
+  const rows = data.by_variation.map(r => ({...r, avg: r.units ? r.revenue / r.units : 0, listpc: r.units ? r.list / r.units : 0,
+    real: r.list ? r.revenue / r.list * 100 : 0, margin: r.revenue - r.cost, mpct: r.revenue ? (r.revenue - r.cost) / r.revenue * 100 : 0}));
+  table('priceTable', [
+    {k: 'code', t: t('cCode')}, {k: 'packaging', t: t('cPack'), f: packName},
+    {k: 'units', t: t('pieces'), f: num, n: 1}, {k: 'revenue', t: t('revenue'), f: ghs, n: 1},
+    {k: 'avg', t: t('cAvgPc'), f: ghs, n: 1}, {k: 'listpc', t: t('cListPc'), f: ghs, n: 1},
+    {k: 'real', t: t('cOfList'), n: 1, html: r => `<span class="${r.real < 97 ? 'delta down' : ''}">${r.real.toFixed(0)}%</span>`, csv: r => r.real.toFixed(1)},
+    {k: 'discount', t: t('cDiscounts'), f: v => v ? ghs(v) : '—', n: 1, csv: r => (r.discount / 100).toFixed(2)},
+    {k: 'margin', t: t('margin'), f: ghs, n: 1},
+    {k: 'mpct', t: t('cMarginPct'), html: r => `<div class="bar-cell" style="min-width:110px;justify-content:flex-end"><span class="b" style="width:${Math.max(2, r.mpct * .6)}px;background:var(${PRODUCTS[r.sku].color})"></span><span>${r.mpct.toFixed(0)}%</span></div>`, csv: r => r.mpct.toFixed(1), n: 1},
+  ], rows, t('noSalesPeriod'), 'priceCsv', 'price-and-margin');
 }
 
 function barCell(v, max, color) {
   const w = max ? Math.max(2, v / max * 100) : 0;
   return `<div class="bar-cell"><span class="b" style="width:${w}px;background:var(${color})"></span><span>${ghs(v)}</span></div>`;
 }
-function renderVar() {
-  const rows = data.by_variation, max = Math.max(0, ...rows.map(r => r.revenue));
-  table('varTable', [
-    {k: 'code', t: 'Code'}, {k: 'packaging', t: 'Packaging'},
-    {k: 'units', t: 'Units', f: num, n: 1},
-    {k: 'revenue', t: 'Revenue', html: r => barCell(r.revenue, max, PRODUCTS[r.sku].color), csv: r => (r.revenue / 100).toFixed(2)},
-  ], rows, 'No sales in this period.', 'varCsv', 'sales-by-variation');
-}
 function renderCust() {
   const rows = data.customers, max = Math.max(0, ...rows.map(r => r.revenue));
   table('custTable', [
-    {k: 'customer', t: 'Customer'}, {k: 'orders', t: 'Orders', f: num, n: 1}, {k: 'units', t: 'Units', f: num, n: 1},
-    {k: 'revenue', t: 'Revenue', html: r => barCell(r.revenue, max, '--accent'), csv: r => (r.revenue / 100).toFixed(2)},
-  ], rows, 'No sales in this period.', 'custCsv', 'top-customers');
+    {k: 'customer', t: t('cCustomer'), f: v => v === '(walk-in / not recorded)' ? t('walkin') : v}, {k: 'orders', t: t('cOrders'), f: num, n: 1}, {k: 'units', t: t('pieces'), f: num, n: 1},
+    {k: 'revenue', t: t('revenue'), html: r => barCell(r.revenue, max, '--accent'), csv: r => (r.revenue / 100).toFixed(2)},
+  ], rows, t('noSalesPeriod'), 'custCsv', 'top-customers');
 }
 function renderTiers() {
   const rows = data.tiers, total = rows.reduce((a, r) => a + r.revenue, 0), max = Math.max(0, ...rows.map(r => r.revenue));
   rows.forEach(r => r.share = total ? r.revenue / total * 100 : 0);
   table('tierTable', [
-    {k: 'label', t: 'Order size'}, {k: 'orders', t: 'Orders', f: num, n: 1},
-    {k: 'revenue', t: 'Revenue', html: r => barCell(r.revenue, max, '--accent'), csv: r => (r.revenue / 100).toFixed(2)},
-    {k: 'share', t: 'Share', f: v => v.toFixed(1) + '%', n: 1},
-  ], total ? rows : [], 'No sales in this period.', 'tierCsv', 'discount-tiers');
-}
-function renderStock() {
-  table('stockTable', [
-    {k: 'code', t: 'Code'}, {k: 'packaging', t: 'Packaging'},
-    {k: 'low', t: 'Status', html: r => r.low ? '<span class="badge warn">⚠ Low</span>' : '<span class="badge ok">✓ OK</span>', csv: r => r.low ? 'Low' : 'OK'},
-    {k: 'on_hand', t: 'On hand (pcs)', f: num, n: 1}, {k: 'packs', t: 'Full packs', f: num, n: 1},
-    {k: 'avg7', t: 'Avg/day 7d', f: v => v.toFixed(1), n: 1}, {k: 'avg28', t: 'Avg/day 28d', f: v => v.toFixed(1), n: 1},
-    {k: 'days_cover', t: 'Days of cover', f: v => v === null ? 'no recent sales' : v.toFixed(0), n: 1},
-    {k: 'stockout', t: 'Projected stockout', f: v => v ?? '—'},
-    {k: 'reorder_level', t: 'Reorder level', f: num, n: 1},
-    {k: 'suggest_packs', t: 'Suggested reorder (pcs)', html: r => r.suggest_packs ? `${num(r.suggest_packs)} packs (${num(r.suggest_pieces)} pcs)` : '—', csv: r => r.suggest_pieces},
-    {k: 'value_cost', t: 'Value at cost', f: ghs, n: 1}, {k: 'value_retail', t: 'Value at retail', f: ghs, n: 1},
-  ], data.stock, 'No stock loaded yet.', 'stockCsv', 'stock-on-hand', r => r.low ? 'low' : '');
+    {k: 'label', t: t('cOrderSize'), f: tierLabel}, {k: 'orders', t: t('cOrders'), f: num, n: 1},
+    {k: 'revenue', t: t('revenue'), html: r => barCell(r.revenue, max, '--accent'), csv: r => (r.revenue / 100).toFixed(2)},
+    {k: 'share', t: t('share'), f: v => v.toFixed(1) + '%', n: 1},
+  ], total ? rows : [], t('noSalesPeriod'), 'tierCsv', 'discount-tiers');
 }
 function renderLedger() {
   const type = $('lType').value, q = $('lSearch').value.trim().toLowerCase();
   const rows = data.ledger.filter(r => (!type || r.type === type) && (!q || (r.customer + ' ' + r.code + ' ' + r.sku).toLowerCase().includes(q)));
-  $('ledgerSub').textContent = `${num(rows.length)} shown of ${num(data.ledger_total)} in ${data.range.from} to ${data.range.to}` + (data.ledger_total > data.ledger.length ? ' (latest 1,000 loaded; narrow the dates for older ones)' : '');
+  $('ledgerSub').textContent = t('ledgerSub', {a: num(rows.length), b: num(data.ledger_total)}) + (data.ledger_total > data.ledger.length ? t('ledgerMore') : '');
   table('ledgerTable', [
-    {k: 'date', t: 'Date'}, {k: 'code', t: 'Code'}, {k: 'type', t: 'Type', f: v => TYPE_LABEL[v] || v},
-    {k: 'qty', t: 'Qty (pcs)', f: v => (v > 0 ? '+' : '') + num(v), n: 1},
-    {k: 'unit_price', t: 'Unit price', f: v => v ? ghs(v) : '', n: 1, csv: r => (r.unit_price / 100).toFixed(2)}, {k: 'amount', t: 'Amount', f: v => v ? ghs(v) : '', n: 1, csv: r => (r.amount / 100).toFixed(2)},
-    {k: 'customer', t: 'Customer'}, {k: 'balance', t: 'Balance', f: num, n: 1},
-  ], rows, 'No movements in this period.', 'ledgerCsv', 'stock-movements');
+    {k: 'date', t: t('cDate')}, {k: 'code', t: t('cCode')},
+    {k: 'type', t: t('cType'), html: r => `<span class="typ"><i style="background:var(${TYPE[r.type] || '--muted'})"></i>${esc(t('type_' + r.type))}</span>`, csv: r => r.type},
+    {k: 'qty', t: t('cQty'), f: v => (v > 0 ? '+' : '') + num(v), n: 1},
+    {k: 'unit_price', t: t('cUnitPrice'), f: v => v ? ghs(v) : '', n: 1, csv: r => (r.unit_price / 100).toFixed(2)}, {k: 'amount', t: t('cAmount'), f: v => v ? ghs(v) : '', n: 1, csv: r => (r.amount / 100).toFixed(2)},
+    {k: 'customer', t: t('cCustomer')}, {k: 'balance', t: t('cBalance'), f: num, n: 1},
+  ], rows, t('noMoves'), 'ledgerCsv', 'stock-movements');
 }
 
-// ---- sortable table + CSV ----
+// ---------- sortable table + CSV ----------
 const sortState = {};
 function table(id, cols, rows, emptyMsg, csvBtn, csvName, rowClass) {
   const st = sortState[id];
   let list = rows.slice();
-  if (st) {
-    const c = cols.find(c => c.k === st.k);
-    if (c) list.sort((a, b) => { const x = a[st.k], y = b[st.k]; return (x === y ? 0 : x === null ? 1 : y === null ? -1 : x < y ? -1 : 1) * st.dir; });
-  }
+  if (st) list.sort((a, b) => { const x = a[st.k], y = b[st.k]; return (x === y ? 0 : x === null ? 1 : y === null ? -1 : x < y ? -1 : 1) * st.dir; });
   const el = $(id);
-  if (!list.length) el.innerHTML = `<div class="empty">${esc(emptyMsg || 'No data.')}</div>`;
-  else el.innerHTML = '<table><thead><tr>' + cols.map(c => `<th data-k="${c.k}" class="${c.n ? 'num' : ''}" ${st && st.k === c.k ? `aria-sort="${st.dir > 0 ? 'ascending' : 'descending'}"` : ''} scope="col">${esc(c.t)}</th>`).join('') + '</tr></thead><tbody>'
-    + list.map(r => `<tr class="${rowClass ? rowClass(r) : ''}">` + cols.map(c => `<td class="${c.n ? 'num' : ''}">${c.html ? c.html(r) : esc(c.f ? c.f(r[c.k]) : r[c.k])}</td>`).join('') + '</tr>').join('') + '</tbody></table>';
+  if (!list.length) el.innerHTML = `<div class="empty">${esc(emptyMsg || t('noDataShort'))}</div>`;
+  else el.innerHTML = '<table><thead><tr>' + cols.map(c => `<th data-k="${c.k}" class="${c.n ? 'n' : ''}" ${st && st.k === c.k ? `aria-sort="${st.dir > 0 ? 'ascending' : 'descending'}"` : ''} scope="col">${esc(c.t)}</th>`).join('') + '</tr></thead><tbody>'
+    + list.map(r => `<tr class="${rowClass ? rowClass(r) : ''}">` + cols.map(c => `<td class="${c.n ? 'n' : ''}">${c.html ? c.html(r) : esc(c.f ? c.f(r[c.k]) : r[c.k])}</td>`).join('') + '</tr>').join('') + '</tbody></table>';
   el.querySelectorAll('th').forEach(th => th.onclick = () => {
     const k = th.dataset.k, cur = sortState[id];
     sortState[id] = {k, dir: cur && cur.k === k ? -cur.dir : (typeof rows[0]?.[k] === 'number' ? -1 : 1)};
@@ -418,9 +938,9 @@ function table(id, cols, rows, emptyMsg, csvBtn, csvName, rowClass) {
 }
 function downloadCsv(name, cols, rows) {
   const cell = v => { const s = String(v ?? ''); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
-  const money = c => c.f === ghs || c.csv;
-  const val = (c, r) => c.csv ? c.csv(r) : c.f === ghs ? (r[c.k] / 100).toFixed(2) : c.k === 'type' ? r[c.k] : r[c.k];
-  const head = cols.map(c => c.t + (money(c) && c.k !== 'low' && c.k !== 'suggest_packs' ? ' (GHS)' : ''));
+  const money = c => c.f === ghs || (c.csv && /revenue|price|amount|discount/.test(c.k));
+  const val = (c, r) => c.csv ? c.csv(r) : c.f === ghs ? (r[c.k] / 100).toFixed(2) : r[c.k];
+  const head = cols.map(c => c.t + (money(c) ? ' (GHS)' : ''));
   const csv = [head, ...rows.map(r => cols.map(c => val(c, r)))].map(r => r.map(cell).join(',')).join('\n');
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob(['﻿' + csv], {type: 'text/csv'}));
@@ -428,8 +948,8 @@ function downloadCsv(name, cols, rows) {
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
-let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => data && renderTrend(), 150); });
-applyPreset(); load();
+let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { if (data) { renderTrend(); renderCum(); renderMix(); renderDow(); } }, 150); });
+applyPreset('30'); load();
 setInterval(load, 5 * 60 * 1000);
 </script>
 </body>

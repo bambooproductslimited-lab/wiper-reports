@@ -392,7 +392,7 @@ function report(array $q): array {
         fn($m) => isset($vIds[$m['variation_id']])));
 
     $tiers = db()->query('SELECT * FROM discount_tiers ORDER BY threshold_pesewas DESC')->fetchAll();
-    $kpi = fn() => ['revenue' => 0, 'units' => 0, 'cost' => 0, 'margin' => 0, 'orders' => 0];
+    $kpi = fn() => ['revenue' => 0, 'units' => 0, 'cost' => 0, 'margin' => 0, 'orders' => 0, 'discount' => 0, 'list' => 0, 'lines' => 0];
     $cur = $kpi(); $prev = $kpi();
     $keys = bucket_keys($from, $to, $bucket);
     $series = ['U01' => ['revenue' => array_fill(0, count($keys), 0), 'units' => array_fill(0, count($keys), 0)],
@@ -401,6 +401,13 @@ function report(array $q): array {
     $byVar = []; $cust = []; $orders = []; $prevOrders = [];
     $onHand = []; $sold7 = []; $sold28 = []; $ledger = []; $running = [];
     $d7 = date('Y-m-d', strtotime($today . ' -6 days')); $d28 = date('Y-m-d', strtotime($today . ' -27 days'));
+    // Daily history for the calendar heatmap: at least 26 weeks back from the end date, Monday-aligned.
+    $hFrom = min($from, date('Y-m-d', strtotime($to . ' -181 days')));
+    $hFrom = date('Y-m-d', strtotime('monday this week', strtotime($hFrom)));
+    $daily = []; for ($t = strtotime($hFrom); $t <= strtotime($to); $t = strtotime('+1 day', $t)) $daily[date('Y-m-d', $t)] = ['revenue' => 0, 'units' => 0];
+    $dow = array_fill(0, 7, ['revenue' => 0, 'units' => 0, 'days' => 0]);
+    for ($t = strtotime($from); $t <= strtotime($to); $t = strtotime('+1 day', $t)) $dow[(int)date('N', $t) - 1]['days']++;
+    $life = []; $firstDate = null;
 
     foreach ($mov as $m) {
         $vid = (int)$m['variation_id']; $v = $vById[$vid];
@@ -408,6 +415,11 @@ function report(array $q): array {
         $running[$vid] = ($running[$vid] ?? 0) + $qty;
         $onHand[$vid] = $running[$vid];
         $isSale = $m['type'] === 'sale'; $pcs = -$qty;
+        $firstDate ??= $m['date'];
+        $l = &$life[$vid]; $l ??= ['in' => 0, 'sold' => 0, 'last_sale' => null];
+        if ($isSale) { $l['sold'] += $pcs; $l['last_sale'] = $m['date']; } elseif ($qty > 0) $l['in'] += $qty;
+        unset($l);
+        if ($isSale && isset($daily[$m['date']])) { $daily[$m['date']]['revenue'] += $m['amount_pesewas']; $daily[$m['date']]['units'] += $pcs; }
         if ($isSale && $m['date'] >= $d7) $sold7[$vid] = ($sold7[$vid] ?? 0) + $pcs;
         if ($isSale && $m['date'] >= $d28) $sold28[$vid] = ($sold28[$vid] ?? 0) + $pcs;
         $orderKey = $m['order_ref'] !== '' ? 'r:' . $m['order_ref'] : ($m['customer'] !== '' ? 'c:' . $m['date'] . '|' . $m['customer'] : 'm:' . $m['id']);
@@ -417,10 +429,14 @@ function report(array $q): array {
                 'customer' => $m['customer'], 'balance' => $running[$vid]];
             if ($isSale) {
                 $cur['revenue'] += $m['amount_pesewas']; $cur['units'] += $pcs; $cur['cost'] += $pcs * $m['cost_pesewas'];
+                $listPc = (int)round($v['retail_pesewas'] / max(1, (int)$v['pieces_per_pack']));
+                $cur['discount'] += (int)$m['discount_pesewas']; $cur['list'] += $pcs * $listPc; $cur['lines']++;
+                $w = (int)date('N', strtotime($m['date'])) - 1; $dow[$w]['revenue'] += $m['amount_pesewas']; $dow[$w]['units'] += $pcs;
                 $i = $keyIdx[bucket_key($m['date'], $bucket)];
                 $series[$v['sku']]['revenue'][$i] += $m['amount_pesewas']; $series[$v['sku']]['units'][$i] += $pcs;
-                $b = &$byVar[$v['code']]; $b ??= ['code' => $v['code'], 'sku' => $v['sku'], 'packaging' => $v['packaging'], 'revenue' => 0, 'units' => 0];
-                $b['revenue'] += $m['amount_pesewas']; $b['units'] += $pcs; unset($b);
+                $b = &$byVar[$v['code']]; $b ??= ['code' => $v['code'], 'sku' => $v['sku'], 'packaging' => $v['packaging'], 'revenue' => 0, 'units' => 0, 'cost' => 0, 'discount' => 0, 'list' => 0, 'lines' => 0];
+                $b['revenue'] += $m['amount_pesewas']; $b['units'] += $pcs; $b['cost'] += $pcs * $m['cost_pesewas'];
+                $b['discount'] += (int)$m['discount_pesewas']; $b['list'] += $pcs * $listPc; $b['lines']++; unset($b);
                 $name = $m['customer'] !== '' ? $m['customer'] : '(walk-in / not recorded)';
                 $c = &$cust[$name]; $c ??= ['customer' => $name, 'revenue' => 0, 'units' => 0, 'orders' => []];
                 $c['revenue'] += $m['amount_pesewas']; $c['units'] += $pcs; $c['orders'][$orderKey] = 1; unset($c);
@@ -428,6 +444,8 @@ function report(array $q): array {
             }
         } elseif ($isSale && $m['date'] >= $prevFrom && $m['date'] <= $prevTo) {
             $prev['revenue'] += $m['amount_pesewas']; $prev['units'] += $pcs; $prev['cost'] += $pcs * $m['cost_pesewas'];
+            $prev['discount'] += (int)$m['discount_pesewas']; $prev['lines']++;
+            $prev['list'] += $pcs * (int)round($v['retail_pesewas'] / max(1, (int)$v['pieces_per_pack']));
             $prevOrders[$orderKey] = 1;
         }
     }
@@ -461,7 +479,9 @@ function report(array $q): array {
             'stockout' => $cover === null ? null : date('Y-m-d', strtotime($today . ' +' . (int)floor($cover) . ' days')),
             'reorder_level' => (int)$v['reorder_level'], 'low' => $oh <= (int)$v['reorder_level'] || ($cover !== null && $cover < 14),
             'suggest_packs' => $packs, 'suggest_pieces' => $packs * $ppp,
-            'value_cost' => $oh * (int)$v['cost_pesewas'], 'value_retail' => (int)round($oh * $retailPc)];
+            'value_cost' => $oh * (int)$v['cost_pesewas'], 'value_retail' => (int)round($oh * $retailPc),
+            'cost_pc' => (int)$v['cost_pesewas'], 'retail_pc' => (int)round($retailPc),
+            'received' => $life[$id]['in'] ?? 0, 'sold_total' => $life[$id]['sold'] ?? 0, 'last_sale' => $life[$id]['last_sale'] ?? null];
         $tot['pieces'] += $oh; $tot['value_cost'] += $oh * (int)$v['cost_pesewas']; $tot['value_retail'] += (int)round($oh * $retailPc);
     }
 
@@ -478,6 +498,7 @@ function report(array $q): array {
         'kpis' => ['current' => $cur, 'previous' => $prev, 'stock' => $tot],
         'series' => ['buckets' => $keys, 'products' => $series],
         'by_variation' => array_values($byVar), 'customers' => $cust, 'tiers' => array_values($tierRows),
+        'daily' => array_map(fn($d, $v) => ['date' => $d] + $v, array_keys($daily), $daily), 'dow' => $dow, 'first_date' => $firstDate,
         'stock' => $stock, 'ledger' => $ledger, 'ledger_total' => $ledgerTotal,
         'variations' => array_map(fn($v) => ['code' => $v['code'], 'sku' => $v['sku'], 'packaging' => $v['packaging']], $allVars),
     ];

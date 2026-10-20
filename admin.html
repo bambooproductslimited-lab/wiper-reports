@@ -38,30 +38,34 @@ code, pre { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12
 pre { background: var(--bg); padding: 8px; border-radius: 8px; overflow-x: auto; }
 #lock { max-width: 380px; margin: 10vh auto; }
 a { color: var(--accent); }
+.langsw { display: inline-flex; background: var(--bg); border: 1px solid var(--border); border-radius: 999px; padding: 2px; }
+.langsw button { border: 0; background: transparent; min-height: 26px; padding: 2px 10px; font-size: 12.5px; border-radius: 999px; }
+.langsw button[aria-pressed="true"] { background: var(--accent); color: #fff; font-weight: 700; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <div><h1>Admin</h1><div class="sub">wiper.chou.net · data entry &amp; imports (reports stay public)</div></div>
-    <div class="row"><a href="./">← Reports</a><button type="button" class="small" id="logoutBtn" hidden>Sign out</button></div>
+    <div><h1 data-i18n="adminTitle">Admin</h1><div class="sub" data-i18n="adminSub">wiper.chou.net · data entry &amp; imports (reports stay public)</div></div>
+    <div class="row" style="align-items:center"><div class="langsw" role="group" aria-label="Language"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="zh" aria-pressed="false" lang="zh">中文</button></div>
+      <a href="./" data-i18n="backReports">← Reports</a><button type="button" class="small" id="logoutBtn" hidden data-i18n="signOut">Sign out</button></div>
   </header>
 
   <section class="card" id="lock">
     <div id="loginBox" hidden>
-      <h2>Sign in</h2>
+      <h2 data-i18n="signIn">Sign in</h2>
       <form id="loginForm" class="row">
-        <label for="loginPin">Admin PIN <input id="loginPin" type="password" inputmode="numeric" autocomplete="current-password" required></label>
-        <button class="primary">Sign in</button>
+        <label for="loginPin"><span data-i18n="adminPin">Admin PIN</span> <input id="loginPin" type="password" inputmode="numeric" autocomplete="current-password" required></label>
+        <button class="primary" data-i18n="signIn">Sign in</button>
       </form>
     </div>
     <div id="setupBox" hidden>
-      <h2>First-time setup</h2>
-      <p class="sub">Enter the one-time setup code and choose an admin PIN (4–8 digits).</p>
+      <h2 data-i18n="setupTitle">First-time setup</h2>
+      <p class="sub" data-i18n="setupSub">Enter the one-time setup code and choose an admin PIN (4–8 digits).</p>
       <form id="setupForm" class="row">
-        <label for="setupCode">Setup code <input id="setupCode" autocomplete="off" required></label>
-        <label for="setupPin">New PIN <input id="setupPin" type="password" inputmode="numeric" autocomplete="new-password" required></label>
-        <button class="primary">Save PIN</button>
+        <label for="setupCode"><span data-i18n="setupCode">Setup code</span> <input id="setupCode" autocomplete="off" required></label>
+        <label for="setupPin"><span data-i18n="newPin">New PIN</span> <input id="setupPin" type="password" inputmode="numeric" autocomplete="new-password" required></label>
+        <button class="primary" data-i18n="savePin">Save PIN</button>
       </form>
     </div>
     <div class="msg" id="lockMsg"></div>
@@ -69,94 +73,87 @@ a { color: var(--accent); }
 
   <div id="app" hidden>
     <section class="card">
-      <h2>Opening stock</h2>
-      <div id="seedBox" class="sub">Loading…</div>
+      <h2 data-i18n="openingStock">Opening stock</h2>
+      <div id="seedBox" class="sub">…</div>
     </section>
 
     <section class="card">
-      <h2>Upload sales &amp; stock (CSV or Excel)</h2>
-      <p class="sub"><b>Sales report:</b> upload the shop's sales report workbook as it is (e.g. <code>20261019_WB_SP_Sales_Report.xlsx</code>). Each sheet named like "Wiper Blade" or "Spark Plug" with columns
-        <code>Date, Product, Quantity, Unit Price (GHS), Sales Amount (GHS), Discount (GHS)</code> is read; Product is the packaging (Loose, Brown box, White box, White plastic, Blue box, Bundle; Box for spark plugs),
-        Quantity is in packs and is converted to pieces, and revenue is Sales Amount minus Discount. Other sheets (e.g. Summary) are skipped.
-        The report is a running list, so re-uploading it <b>replaces</b> that product's report rows for the dates it covers — nothing is counted twice.</p>
-      <p class="sub"><b>Template</b> (for deliveries, adjustments, transfers, or sales with customers): Excel (.xlsx) or CSV with columns (header row required, any order): <code>date, sku, variation, type, qty, unit_price, customer, note, order_ref</code>. These rows are added, not replaced.<br>
-        <code>date</code> YYYY-MM-DD or DD/MM/YYYY · <code>sku</code> U01 or U02 · <code>variation</code> e.g. FG1 (can be blank when the product has only one) ·
-        <code>type</code> sale, receipt, adjustment or transfer · <code>qty</code> whole pieces (sale/receipt positive; adjustment/transfer signed, e.g. −20) ·
-        <code>unit_price</code> GHS per piece for sales (blank = retail price) · <code>order_ref</code> groups lines into one order for discount tiers.
-        A file with any bad row is rejected as a whole.</p>
+      <h2 data-i18n="uploadTitle">Upload sales &amp; stock (CSV or Excel)</h2>
+      <p class="sub" data-i18n-html="uploadReportHelp"></p>
+      <p class="sub" data-i18n-html="uploadTemplateHelp"></p>
       <pre>date,sku,variation,type,qty,unit_price,customer,note,order_ref
 2026-10-01,U01,FG5,sale,100,14,Kofi Auto Parts,,INV-101
 2026-10-01,U02,FG7,sale,500,4.75,Kofi Auto Parts,,INV-101
 2026-10-02,U01,FG6,adjustment,-3,,,damaged,</pre>
       <div class="row">
-        <label for="csvFile">File <input id="csvFile" type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></label>
-        <label for="csvLabel">Label <input id="csvLabel" placeholder="e.g. October sales"></label>
-        <button type="button" id="csvCheck">Check file</button>
-        <button type="button" class="primary" id="csvImport" disabled>Import</button>
-        <button type="button" id="csvTemplate">Download template</button>
+        <label for="csvFile"><span data-i18n="file">File</span> <input id="csvFile" type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></label>
+        <label for="csvLabel"><span data-i18n="label">Label</span> <input id="csvLabel" placeholder="e.g. October sales" data-i18n-ph="labelPh"></label>
+        <button type="button" id="csvCheck" data-i18n="checkFile">Check file</button>
+        <button type="button" class="primary" id="csvImport" disabled data-i18n="import">Import</button>
+        <button type="button" id="csvTemplate" data-i18n="dlTemplate">Download template</button>
       </div>
       <div class="msg" id="csvMsg"></div>
     </section>
 
     <section class="card">
-      <h2>Record a movement</h2>
+      <h2 data-i18n="recordTitle">Record a movement</h2>
       <form id="mvForm" class="row">
-        <label for="mvDate">Date <input id="mvDate" type="date" required></label>
-        <label for="mvVar">Variation <select id="mvVar" required></select></label>
-        <label for="mvType">Type
-          <select id="mvType"><option value="sale">Sale</option><option value="receipt">Receipt (stock in)</option><option value="adjustment">Adjustment (+/−)</option><option value="transfer">Transfer (+/−)</option></select>
+        <label for="mvDate"><span data-i18n="date">Date</span> <input id="mvDate" type="date" required></label>
+        <label for="mvVar"><span data-i18n="variation">Variation</span> <select id="mvVar" required></select></label>
+        <label for="mvType"><span data-i18n="type">Type</span>
+          <select id="mvType"><option value="sale" data-i18n="optSale">Sale</option><option value="receipt" data-i18n="optReceipt">Receipt (stock in)</option><option value="adjustment" data-i18n="optAdj">Adjustment (+/−)</option><option value="transfer" data-i18n="optTransfer">Transfer (+/−)</option></select>
         </label>
-        <label for="mvUnit">Count in <select id="mvUnit"><option value="pcs">Pieces</option><option value="packs">Packs</option></select></label>
-        <label for="mvQty">Qty <input id="mvQty" type="number" step="1" required></label>
-        <label for="mvPrice">Price/piece GHS <input id="mvPrice" type="number" step="0.01" min="0"></label>
-        <label for="mvCustomer">Customer <input id="mvCustomer" list="custList"></label>
-        <label for="mvOrder">Order ref <input id="mvOrder"></label>
-        <label for="mvNote">Note <input id="mvNote"></label>
-        <button class="primary">Save</button>
+        <label for="mvUnit"><span data-i18n="countIn">Count in</span> <select id="mvUnit"><option value="pcs" data-i18n="pieces">Pieces</option><option value="packs" data-i18n="packsW">Packs</option></select></label>
+        <label for="mvQty"><span data-i18n="qty">Qty</span> <input id="mvQty" type="number" step="1" required></label>
+        <label for="mvPrice"><span data-i18n="pricePc">Price/piece GHS</span> <input id="mvPrice" type="number" step="0.01" min="0"></label>
+        <label for="mvCustomer"><span data-i18n="customer">Customer</span> <input id="mvCustomer" list="custList"></label>
+        <label for="mvOrder"><span data-i18n="orderRef">Order ref</span> <input id="mvOrder"></label>
+        <label for="mvNote"><span data-i18n="note">Note</span> <input id="mvNote"></label>
+        <button class="primary" data-i18n="save">Save</button>
       </form>
       <div class="sub" id="mvHint"></div>
       <div class="msg" id="mvMsg"></div>
     </section>
 
     <section class="card">
-      <h2>Variations</h2>
-      <p class="sub">Cost is per piece; retail is per pack. Reorder level is in pieces (0 = only the sales-rate rule applies).</p>
+      <h2 data-i18n="variations">Variations</h2>
+      <p class="sub" data-i18n="varSub">Cost is per piece; retail is per pack. Reorder level is in pieces (0 = only the sales-rate rule applies).</p>
       <div class="table-wrap" id="varTable"></div>
-      <h2 style="margin-top:14px" id="varFormTitle">Add variation</h2>
+      <h2 style="margin-top:14px" id="varFormTitle" data-i18n="addVar">Add variation</h2>
       <form id="varForm" class="row">
         <input type="hidden" id="vId">
-        <label for="vCode">Code <input id="vCode" required size="6"></label>
-        <label for="vSku">Product <select id="vSku"><option value="U01">U01 Wiper blade</option><option value="U02">U02 Spark plugs</option></select></label>
-        <label for="vPack">Packaging <input id="vPack" required></label>
-        <label for="vPpp">Pieces/pack <input id="vPpp" type="number" min="1" step="1" required></label>
-        <label for="vCost">Cost/piece GHS <input id="vCost" type="number" min="0" step="0.01" required></label>
-        <label for="vRetail">Retail/pack GHS <input id="vRetail" type="number" min="0" step="0.01" required></label>
-        <label for="vReorder">Reorder level <input id="vReorder" type="number" min="0" step="1" value="0"></label>
-        <label for="vLoc">Location <input id="vLoc" size="6"></label>
-        <label for="vActive">Active <select id="vActive"><option value="1">Yes</option><option value="0">No</option></select></label>
-        <button class="primary">Save</button>
-        <button type="button" id="vCancel">Clear</button>
+        <label for="vCode"><span data-i18n="code">Code</span> <input id="vCode" required size="6"></label>
+        <label for="vSku"><span data-i18n="product">Product</span> <select id="vSku"><option value="U01" data-i18n="U01">U01 Wiper blade</option><option value="U02" data-i18n="U02">U02 Spark plugs</option></select></label>
+        <label for="vPack"><span data-i18n="packaging">Packaging</span> <input id="vPack" required></label>
+        <label for="vPpp"><span data-i18n="ppp">Pieces/pack</span> <input id="vPpp" type="number" min="1" step="1" required></label>
+        <label for="vCost"><span data-i18n="costPc">Cost/piece GHS</span> <input id="vCost" type="number" min="0" step="0.01" required></label>
+        <label for="vRetail"><span data-i18n="retailPack">Retail/pack GHS</span> <input id="vRetail" type="number" min="0" step="0.01" required></label>
+        <label for="vReorder"><span data-i18n="reorderLvl">Reorder level</span> <input id="vReorder" type="number" min="0" step="1" value="0"></label>
+        <label for="vLoc"><span data-i18n="location">Location</span> <input id="vLoc" size="6"></label>
+        <label for="vActive"><span data-i18n="active">Active</span> <select id="vActive"><option value="1" data-i18n="yes">Yes</option><option value="0" data-i18n="no">No</option></select></label>
+        <button class="primary" data-i18n="save">Save</button>
+        <button type="button" id="vCancel" data-i18n="clear">Clear</button>
       </form>
       <div class="msg" id="varMsg"></div>
     </section>
 
     <section class="card">
-      <h2>Discount tiers</h2>
-      <p class="sub">An order counts in a tier when its total is <em>over</em> the threshold. Used for the "Sales by discount tier" report.</p>
+      <h2 data-i18n="tiers">Discount tiers</h2>
+      <p class="sub" data-i18n="tiersSub">An order counts in a tier when its total is over the threshold. Used for the discount tier report.</p>
       <div id="tierRows"></div>
-      <div class="row" style="margin-top:8px"><button type="button" id="tierAdd">Add tier</button><button type="button" class="primary" id="tierSave">Save tiers</button></div>
+      <div class="row" style="margin-top:8px"><button type="button" id="tierAdd" data-i18n="addTier">Add tier</button><button type="button" class="primary" id="tierSave" data-i18n="saveTiers">Save tiers</button></div>
       <div class="msg" id="tierMsg"></div>
     </section>
 
     <section class="card">
-      <h2>Uploads</h2>
+      <h2 data-i18n="uploads">Uploads</h2>
       <div class="table-wrap" id="batchTable"></div>
       <div class="msg" id="batchMsg"></div>
     </section>
 
     <section class="card">
-      <h2>Recent movements (last 30 days)</h2>
-      <p class="sub">Void a wrong entry and it stops counting in every report. To remove a whole import, use Undo above.</p>
+      <h2 data-i18n="recent">Recent movements (last 30 days)</h2>
+      <p class="sub" data-i18n="recentSub">Void a wrong entry and it stops counting in every report. To remove a whole import, use Undo above.</p>
       <div class="table-wrap" id="recentTable"></div>
     </section>
   </div>
@@ -169,13 +166,105 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ghs = p => 'GHS ' + (p / 100).toLocaleString('en-GH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 const num = n => Number(n).toLocaleString('en-GH');
+// ---------- languages (English / 中文); the choice is shared with the report page ----------
+const I18N = {
+  en: {
+    docTitle: 'Wiper Report Admin', adminTitle: 'Admin', adminSub: 'wiper.chou.net · data entry & imports (reports stay public)', backReports: '← Reports', signOut: 'Sign out',
+    signIn: 'Sign in', adminPin: 'Admin PIN', setupTitle: 'First-time setup', setupSub: 'Enter the one-time setup code and choose an admin PIN (4–8 digits).',
+    setupCode: 'Setup code', newPin: 'New PIN', savePin: 'Save PIN', openingStock: 'Opening stock', badResponse: 'Bad response from server',
+    seedSrc: 'Source: {s} · date {d} · location {l}', openingPcs: 'Opening pcs', costPcS: 'Cost/pc', retailPackS: 'Retail/pack', valueCost: 'Value at cost', total: 'Total',
+    disagree: 'The source sheets disagree — check before loading:', seedLoaded: 'Loaded {d}. To reload, undo the "Opening stock" upload below. You can also correct counts with an adjustment.',
+    loadSeed: 'Load opening stock', confirmSeed: 'Load these opening counts as of {d}?',
+    uploadTitle: 'Upload sales & stock (CSV or Excel)',
+    uploadReportHelp: '<b>Sales report:</b> upload the shop\'s sales report workbook as it is (e.g. <code>20261019_WB_SP_Sales_Report.xlsx</code>). Each sheet named like "Wiper Blade" or "Spark Plug" with columns <code>Date, Product, Quantity, Unit Price (GHS), Sales Amount (GHS), Discount (GHS)</code> is read; Product is the packaging (Loose, Brown box, White box, White plastic, Blue box, Bundle; Box for spark plugs), Quantity is in packs and is converted to pieces, and revenue is Sales Amount minus Discount. Other sheets (e.g. Summary) are skipped. The report is a running list, so re-uploading it <b>replaces</b> that product\'s report rows for the dates it covers — nothing is counted twice.',
+    uploadTemplateHelp: '<b>Template</b> (for deliveries, adjustments, transfers, or sales with customers): Excel (.xlsx) or CSV with columns (header row required, any order): <code>date, sku, variation, type, qty, unit_price, customer, note, order_ref</code>. These rows are added, not replaced.<br><code>date</code> YYYY-MM-DD or DD/MM/YYYY · <code>sku</code> U01 or U02 · <code>variation</code> e.g. FG1 (can be blank when the product has only one) · <code>type</code> sale, receipt, adjustment or transfer · <code>qty</code> whole pieces (sale/receipt positive; adjustment/transfer signed, e.g. −20) · <code>unit_price</code> GHS per piece for sales (blank = retail price) · <code>order_ref</code> groups lines into one order for discount tiers. A file with any bad row is rejected as a whole.',
+    file: 'File', label: 'Label', labelPh: 'e.g. October sales', checkFile: 'Check file', import: 'Import', dlTemplate: 'Download template',
+    oldXls: 'Old .xls files are not supported. In Excel use File → Save As → Excel Workbook (.xlsx) or CSV.', chooseFile: 'Choose a CSV or .xlsx file first.', lineN: 'Line {n}',
+    fileOk: 'File OK: {n} rows from {sh}, {f} to {to}, {p} pieces sold, revenue {r}', imported: 'Imported: {n} rows from {sh}, {f} to {to}, {p} pieces sold, revenue {r}',
+    afterDisc: ' (after {d} discount)', stop: '.', willReplace: 'Will replace {n} rows from an earlier upload of the report for the same dates.', replaced: 'Replaced {n} rows from an earlier upload of the report for the same dates.',
+    skipped: 'Skipped sheets: {s}.', pressImport: 'Press Import to save.', sfxReport: ' (sales report)', sfxTemplate: ' (template)',
+    recordTitle: 'Record a movement', date: 'Date', variation: 'Variation', type: 'Type', optSale: 'Sale', optReceipt: 'Receipt (stock in)', optAdj: 'Adjustment (+/−)', optTransfer: 'Transfer (+/−)',
+    countIn: 'Count in', pieces: 'Pieces', packsW: 'Packs', qty: 'Qty', pricePc: 'Price/piece GHS', customer: 'Customer', orderRef: 'Order ref', note: 'Note', save: 'Save',
+    mvHint: '{c}: {p} pcs/pack, retail {r}/pack.', nPieces: '{n} pieces', chooseVar: 'Choose a variation.', mvSaved: 'Saved {t} of {n} pcs {c}.',
+    variations: 'Variations', varSub: 'Cost is per piece; retail is per pack. Reorder level is in pieces (0 = only the sales-rate rule applies).',
+    code: 'Code', product: 'Product', packaging: 'Packaging', ppp: 'Pieces/pack', costPc: 'Cost/piece GHS', retailPack: 'Retail/pack GHS', reorderLvl: 'Reorder level', location: 'Location', active: 'Active',
+    yes: 'Yes', no: 'No', clear: 'Clear', edit: 'Edit', addVar: 'Add variation', editVar: 'Edit {c}', saved: 'Saved.', noVars: 'No variations yet. Loading the opening stock creates FG1–FG7.',
+    U01: 'U01 Wiper blade', U02: 'U02 Spark plugs',
+    tiers: 'Discount tiers', tiersSub: 'An order counts in a tier when its total is over the threshold. Used for the discount tier report.', addTier: 'Add tier', saveTiers: 'Save tiers',
+    overGhs: 'Over GHS', discPct: 'Discount %', remove: 'Remove',
+    uploads: 'Uploads', when: 'When', kind: 'Kind', rows: 'Rows', undone: 'undone', undo: 'Undo', noImports: 'No uploads yet.', confirmUndo: 'Undo upload #{n}? All its rows stop counting.', undoneMsg: 'Undone.',
+    kind_seed: 'Opening stock', kind_import: 'Template', kind_report: 'Sales report',
+    recent: 'Recent movements (last 30 days)', recentSub: 'Void a wrong entry and it stops counting in every report. To remove a whole upload, use Undo above.',
+    amount: 'Amount', void: 'Void', noRecent: 'No movements in the last 30 days.', confirmVoid: 'Void this movement?',
+    type_sale: 'Sale', type_receipt: 'Receipt', type_adjustment: 'Adjustment', type_transfer: 'Transfer', type_opening: 'Opening',
+  },
+  zh: {
+    docTitle: '雨刮片报表管理', adminTitle: '管理', adminSub: 'wiper.chou.net · 数据录入与上传（报表页面公开）', backReports: '← 报表', signOut: '退出',
+    signIn: '登录', adminPin: '管理员 PIN', setupTitle: '首次设置', setupSub: '输入一次性设置码，并设定管理员 PIN（4–8 位数字）。',
+    setupCode: '设置码', newPin: '新 PIN', savePin: '保存 PIN', openingStock: '期初库存', badResponse: '服务器响应异常',
+    seedSrc: '来源：{s} · 日期 {d} · 库位 {l}', openingPcs: '期初件数', costPcS: '每件成本', retailPackS: '每包零售价', valueCost: '成本价值', total: '合计',
+    disagree: '来源表格数据不一致，载入前请核对：', seedLoaded: '已于 {d} 载入。如需重新载入，请在下方撤销"期初库存"上传。也可以用调整记录更正数量。',
+    loadSeed: '载入期初库存', confirmSeed: '确认载入截至 {d} 的期初数量？',
+    uploadTitle: '上传销售与库存（CSV 或 Excel）',
+    uploadReportHelp: '<b>销售报表：</b>直接上传店里的销售报表工作簿（例如 <code>20261019_WB_SP_Sales_Report.xlsx</code>）。系统读取名称类似 "Wiper Blade" 或 "Spark Plug" 的工作表，列为 <code>Date, Product, Quantity, Unit Price (GHS), Sales Amount (GHS), Discount (GHS)</code>；Product 为包装（Loose 散装、Brown box 棕盒、White box 白盒、White plastic 白色塑料、Blue box 蓝盒、Bundle 捆装；火花塞为 Box 盒装），Quantity 为包数并换算成件数，收入 = Sales Amount 减 Discount。其他工作表（如 Summary）会被跳过。报表是累计清单，重新上传会<b>替换</b>该产品在所涵盖日期内的报表记录，不会重复计算。',
+    uploadTemplateHelp: '<b>模板</b>（用于入库、调整、调拨或带客户的销售）：Excel（.xlsx）或 CSV，需要表头行，列顺序不限：<code>date, sku, variation, type, qty, unit_price, customer, note, order_ref</code>。这些记录会被追加，不会替换。<br><code>date</code> 为 YYYY-MM-DD 或 DD/MM/YYYY · <code>sku</code> 为 U01 或 U02 · <code>variation</code> 如 FG1（产品只有一种包装时可留空）· <code>type</code> 为 sale、receipt、adjustment 或 transfer · <code>qty</code> 为整数件数（销售/入库为正数；调整/调拨可带正负号，如 −20）· <code>unit_price</code> 为销售的每件价格 GHS（留空 = 零售价）· <code>order_ref</code> 把多行归为同一订单以计算折扣档次。文件中只要有一行错误，整个文件都不会导入。',
+    file: '文件', label: '备注名称', labelPh: '例如：十月销售', checkFile: '检查文件', import: '导入', dlTemplate: '下载模板',
+    oldXls: '不支持旧版 .xls 文件。请在 Excel 中选择 文件 → 另存为 → Excel 工作簿（.xlsx）或 CSV。', chooseFile: '请先选择 CSV 或 .xlsx 文件。', lineN: '第 {n} 行',
+    fileOk: '文件正常：{sh} 共 {n} 行，{f} 至 {to}，售出 {p} 件，收入 {r}', imported: '已导入：{sh} 共 {n} 行，{f} 至 {to}，售出 {p} 件，收入 {r}',
+    afterDisc: '（已扣除折扣 {d}）', stop: '。', willReplace: '将替换之前上传的同期报表记录 {n} 行。', replaced: '已替换之前上传的同期报表记录 {n} 行。',
+    skipped: '已跳过工作表：{s}。', pressImport: '点击"导入"保存。', sfxReport: '（销售报表）', sfxTemplate: '（模板）',
+    recordTitle: '录入一条变动', date: '日期', variation: '包装', type: '类型', optSale: '销售', optReceipt: '入库', optAdj: '调整（+/−）', optTransfer: '调拨（+/−）',
+    countIn: '计量单位', pieces: '件', packsW: '包', qty: '数量', pricePc: '每件价格 GHS', customer: '客户', orderRef: '订单号', note: '备注', save: '保存',
+    mvHint: '{c}：每包 {p} 件，零售价 {r}/包。', nPieces: '{n} 件', chooseVar: '请选择包装。', mvSaved: '已保存：{t} {n} 件 {c}。',
+    variations: '包装规格', varSub: '成本按每件计，零售价按每包计。补货点以件数计（0 = 仅按销售速度判断）。',
+    code: '编号', product: '产品', packaging: '包装', ppp: '每包件数', costPc: '每件成本 GHS', retailPack: '每包零售价 GHS', reorderLvl: '补货点', location: '库位', active: '启用',
+    yes: '是', no: '否', clear: '清空', edit: '编辑', addVar: '新增包装', editVar: '编辑 {c}', saved: '已保存。', noVars: '尚无包装规格。载入期初库存会创建 FG1–FG7。',
+    U01: 'U01 雨刮片', U02: 'U02 火花塞',
+    tiers: '折扣档次', tiersSub: '订单总额超过门槛即计入该档次，用于折扣档次报表。', addTier: '新增档次', saveTiers: '保存档次',
+    overGhs: '超过 GHS', discPct: '折扣 %', remove: '删除',
+    uploads: '上传记录', when: '时间', kind: '类别', rows: '行数', undone: '已撤销', undo: '撤销', noImports: '尚无上传。', confirmUndo: '撤销第 {n} 次上传？其中所有记录将不再计算。', undoneMsg: '已撤销。',
+    kind_seed: '期初库存', kind_import: '模板', kind_report: '销售报表',
+    recent: '近期变动（最近 30 天）', recentSub: '作废错误记录后，所有报表都不再计算该记录。如需移除整次上传，请使用上方的"撤销"。',
+    amount: '金额', void: '作废', noRecent: '最近 30 天无变动。', confirmVoid: '作废这条记录？',
+    type_sale: '销售', type_receipt: '入库', type_adjustment: '调整', type_transfer: '调拨', type_opening: '期初',
+  },
+};
+const PACK_ZH = {
+  'Blue box (5 mini boxes × 2 blades)': '蓝盒（5 小盒 × 2 片）', 'Brown box (5 mini boxes × 1 blade)': '棕盒（5 小盒 × 1 片）',
+  'White box (2 blades)': '白盒（2 片）', 'White plastic (1 blade)': '白色塑料包装（1 片）', 'Bundle (50 blades)': '捆装（50 片）',
+  'Loose blade': '散装雨刮片', 'Box of 100 spark plugs': '火花塞盒装（100 个）',
+};
+let lang = 'en';
+try { lang = localStorage.getItem('wiper_lang') || ((navigator.language || '').toLowerCase().startsWith('zh') ? 'zh' : 'en'); } catch (e) {}
+if (!I18N[lang]) lang = 'en';
+const LOC = () => lang === 'zh' ? 'zh-CN' : 'en-GB';
+function t(key, vars) {
+  let s = (I18N[lang] && key in I18N[lang]) ? I18N[lang][key] : (key in I18N.en ? I18N.en[key] : key);
+  if (vars) s = s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? vars[k] : m);
+  return s;
+}
+const packName = p => lang === 'zh' && PACK_ZH[p] ? PACK_ZH[p] : p;
+function applyLang() {
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  document.title = t('docTitle');
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = t(el.dataset.i18nHtml); }); // trusted dictionary HTML only
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
+  document.querySelectorAll('.langsw button').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === lang));
+}
+document.querySelectorAll('.langsw button').forEach(b => b.onclick = () => {
+  lang = b.dataset.lang; try { localStorage.setItem('wiper_lang', lang); } catch (e) {}
+  applyLang(); rerender(); mvHint();
+});
+applyLang();
+
 try { const t = localStorage.getItem('wiper_theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
 let token = ''; try { token = sessionStorage.getItem('wiper_token') || ''; } catch (e) {}
 let cat = null;
 
 async function api(action, body) {
   const r = await fetch('api.php?action=' + action, {method: body === undefined ? 'GET' : 'POST', headers: {'Content-Type': 'application/json', 'X-Session': token}, body: body === undefined ? undefined : JSON.stringify(body)});
-  const j = await r.json().catch(() => ({ok: false, error: 'Bad response from server'}));
+  const j = await r.json().catch(() => ({ok: false, error: t('badResponse')}));
   if (j.code === 'auth') { setToken(''); showLock(); }
   return j;
 }
@@ -212,15 +301,15 @@ async function showApp() {
 async function loadSeed() {
   const j = await api('seed_preview', {}); if (!j.ok) return;
   const total = j.rows.reduce((a, r) => a + r.value_cost_pesewas, 0);
-  $('seedBox').innerHTML = `<p class="sub">Source: ${esc(j.source)} · date ${esc(j.date)} · location ${esc(j.location)}</p>
-    <div class="table-wrap"><table><thead><tr><th>Code</th><th>Product</th><th>Packaging</th><th class="num">Pcs/pack</th><th class="num">Opening pcs</th><th class="num">Cost/pc</th><th class="num">Retail/pack</th><th class="num">Value at cost</th></tr></thead><tbody>
-    ${j.rows.map(r => `<tr><td>${esc(r.code)}</td><td>${esc(r.sku)}</td><td>${esc(r.packaging)}</td><td class="num">${num(r.pieces_per_pack)}</td><td class="num">${num(r.opening)}</td><td class="num">${ghs(r.cost_pesewas)}</td><td class="num">${ghs(r.retail_pesewas)}</td><td class="num">${ghs(r.value_cost_pesewas)}</td></tr>`).join('')}
-    <tr><th colspan="7">Total</th><th class="num">${ghs(total)}</th></tr></tbody></table></div>
-    <div class="warnbox"><b>The source sheets disagree — check before loading:</b><ul>${j.discrepancies.map(d => `<li>${esc(d)}</li>`).join('')}</ul></div>
-    ${j.loaded_at ? `<p class="msg ok">Loaded ${esc(new Date(j.loaded_at).toLocaleString('en-GB'))}. To reload, undo the "Opening stock" import below. You can also correct counts with an adjustment.</p>`
-      : `<button type="button" class="primary" id="seedLoad">Load opening stock</button>`}<div class="msg" id="seedMsg"></div>`;
+  $('seedBox').innerHTML = `<p class="sub">${esc(t('seedSrc', {s: j.source, d: j.date, l: j.location}))}</p>
+    <div class="table-wrap"><table><thead><tr><th>${t('code')}</th><th>${t('product')}</th><th>${t('packaging')}</th><th class="num">${t('ppp')}</th><th class="num">${t('openingPcs')}</th><th class="num">${t('costPcS')}</th><th class="num">${t('retailPackS')}</th><th class="num">${t('valueCost')}</th></tr></thead><tbody>
+    ${j.rows.map(r => `<tr><td>${esc(r.code)}</td><td>${esc(r.sku)}</td><td>${esc(packName(r.packaging))}</td><td class="num">${num(r.pieces_per_pack)}</td><td class="num">${num(r.opening)}</td><td class="num">${ghs(r.cost_pesewas)}</td><td class="num">${ghs(r.retail_pesewas)}</td><td class="num">${ghs(r.value_cost_pesewas)}</td></tr>`).join('')}
+    <tr><th colspan="7">${t('total')}</th><th class="num">${ghs(total)}</th></tr></tbody></table></div>
+    <div class="warnbox"><b>${t('disagree')}</b><ul>${j.discrepancies.map(d => `<li>${esc(d)}</li>`).join('')}</ul></div>
+    ${j.loaded_at ? `<p class="msg ok">${esc(t('seedLoaded', {d: new Date(j.loaded_at).toLocaleString(LOC())}))}</p>`
+      : `<button type="button" class="primary" id="seedLoad">${t('loadSeed')}</button>`}<div class="msg" id="seedMsg"></div>`;
   if ($('seedLoad')) $('seedLoad').onclick = async () => {
-    if (!confirm('Load these opening counts as of ' + j.date + '?')) return;
+    if (!confirm(t('confirmSeed', {d: j.date}))) return;
     const r = await api('seed_load', {});
     if (!r.ok) return msg('seedMsg', r.error);
     await showApp();
@@ -237,7 +326,7 @@ $('csvFile').onchange = async () => {
     for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
     upload = {xlsx: btoa(bin)};
   } else if (/\.xls$/i.test(f.name)) {
-    msg('csvMsg', 'Old .xls files are not supported. In Excel use File → Save As → Excel Workbook (.xlsx) or CSV.');
+    msg('csvMsg', t('oldXls'));
   } else upload = {csv: await f.text()};
 };
 $('csvTemplate').onclick = () => {
@@ -245,20 +334,20 @@ $('csvTemplate').onclick = () => {
   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], {type: 'text/csv'})); a.download = 'wiper-upload-template.csv'; a.click();
 };
 async function runImport(dry) {
-  if (!upload) return msg('csvMsg', 'Choose a CSV or .xlsx file first.');
+  if (!upload) return msg('csvMsg', t('chooseFile'));
   const j = await api('import', {...upload, label: $('csvLabel').value || ($('csvFile').files[0] || {}).name, dry_run: dry});
   if (!j.ok) {
     $('csvImport').disabled = true;
     msg('csvMsg', j.error);
-    if (j.errors) $('csvMsg').insertAdjacentHTML('beforeend', '<div class="errors">' + j.errors.map(e => `Line ${e.line}: ${esc(e.error)}`).join('<br>') + '</div>');
+    if (j.errors) $('csvMsg').insertAdjacentHTML('beforeend', '<div class="errors">' + j.errors.map(e => `${esc(t('lineN', {n: e.line}))}: ${esc(e.error)}`).join('<br>') + '</div>');
     return;
   }
   const s = j.summary;
-  msg('csvMsg', `${dry ? 'File OK' : 'Imported'}: ${num(s.rows)} rows from ${s.sheets.join(', ')}, ${s.from} to ${s.to}, ${num(s.sales_pieces)} pieces sold, revenue ${ghs(s.revenue_pesewas)}`
-    + (s.discount_pesewas ? ` (after ${ghs(s.discount_pesewas)} discount)` : '') + '.'
-    + (s.replaces ? ` ${dry ? 'Will replace' : 'Replaced'} ${num(s.replaces)} rows from an earlier upload of the report for the same dates.` : '')
-    + (s.skipped_sheets.length ? ` Skipped sheets: ${s.skipped_sheets.join(', ')}.` : '')
-    + (dry ? ' Press Import to save.' : ''), true);
+  msg('csvMsg', t(dry ? 'fileOk' : 'imported', {n: num(s.rows), sh: s.sheets.map(x => x.replace(' (sales report)', t('sfxReport')).replace(' (template)', t('sfxTemplate'))).join(', '), f: s.from, to: s.to, p: num(s.sales_pieces), r: ghs(s.revenue_pesewas)})
+    + (s.discount_pesewas ? t('afterDisc', {d: ghs(s.discount_pesewas)}) : '') + t('stop')
+    + (s.replaces ? ' ' + t(dry ? 'willReplace' : 'replaced', {n: num(s.replaces)}) : '')
+    + (s.skipped_sheets.length ? ' ' + t('skipped', {s: s.skipped_sheets.join(', ')}) : '')
+    + (dry ? ' ' + t('pressImport') : ''), true);
   $('csvImport').disabled = !dry;
   if (!dry) { upload = null; $('csvFile').value = ''; loadBatches(); loadRecent(); }
 }
@@ -272,19 +361,19 @@ function mvHint() {
   if ($('mvType').value === 'sale' && !$('mvPrice').dataset.touched) $('mvPrice').value = (v.retail_pesewas / v.pieces_per_pack / 100).toFixed(2);
   $('mvPrice').disabled = $('mvType').value !== 'sale';
   const q = +$('mvQty').value || 0, pcs = $('mvUnit').value === 'packs' ? q * v.pieces_per_pack : q;
-  $('mvHint').textContent = `${v.code}: ${v.pieces_per_pack} pcs/pack, retail ${ghs(v.retail_pesewas)}/pack.` + (q ? ` = ${num(pcs)} pieces` + ($('mvType').value === 'sale' ? `, ${ghs(Math.round(pcs * (+$('mvPrice').value || 0) * 100))}` : '') : '');
+  $('mvHint').textContent = t('mvHint', {c: v.code, p: v.pieces_per_pack, r: ghs(v.retail_pesewas)}) + (q ? ' = ' + t('nPieces', {n: num(pcs)}) + ($('mvType').value === 'sale' ? `, ${ghs(Math.round(pcs * (+$('mvPrice').value || 0) * 100))}` : '') : '');
 }
 ['mvVar', 'mvType', 'mvUnit', 'mvQty', 'mvPrice'].forEach(id => $(id).addEventListener('input', mvHint));
 $('mvVar').addEventListener('change', () => { delete $('mvPrice').dataset.touched; mvHint(); });
 $('mvPrice').addEventListener('input', () => $('mvPrice').dataset.touched = 1);
 $('mvForm').onsubmit = async e => {
   e.preventDefault();
-  const v = curVar(); if (!v) return msg('mvMsg', 'Choose a variation.');
+  const v = curVar(); if (!v) return msg('mvMsg', t('chooseVar'));
   const q = parseInt($('mvQty').value, 10), pcs = $('mvUnit').value === 'packs' ? q * v.pieces_per_pack : q;
   const j = await api('add_movement', {date: $('mvDate').value, sku: v.sku, variation: v.code, type: $('mvType').value, qty: pcs,
     unit_price: $('mvType').value === 'sale' ? $('mvPrice').value : '', customer: $('mvCustomer').value, order_ref: $('mvOrder').value, note: $('mvNote').value});
   if (!j.ok) return msg('mvMsg', j.error);
-  msg('mvMsg', `Saved ${$('mvType').value} of ${num(pcs)} pcs ${v.code}.`, true);
+  msg('mvMsg', t('mvSaved', {t: t('type_' + $('mvType').value), n: num(pcs), c: v.code}), true);
   $('mvQty').value = ''; $('mvNote').value = ''; mvHint(); loadRecent();
 };
 
@@ -292,16 +381,16 @@ $('mvForm').onsubmit = async e => {
 async function loadCatalog(j) {
   j = j || await api('catalog', {}); if (!j.ok) return;
   cat = j;
-  $('mvVar').innerHTML = cat.variations.filter(v => +v.active).map(v => `<option value="${v.id}">${esc(v.code)} · ${esc(v.sku)} · ${esc(v.packaging)}</option>`).join('');
+  $('mvVar').innerHTML = cat.variations.filter(v => +v.active).map(v => `<option value="${v.id}">${esc(v.code)} · ${esc(v.sku)} · ${esc(packName(v.packaging))}</option>`).join('');
   mvHint();
-  $('varTable').innerHTML = cat.variations.length ? '<table><thead><tr><th>Code</th><th>Product</th><th>Packaging</th><th class="num">Pcs/pack</th><th class="num">Cost/pc</th><th class="num">Retail/pack</th><th class="num">Reorder lvl</th><th>Location</th><th>Active</th><th></th></tr></thead><tbody>'
-    + cat.variations.map(v => `<tr><td>${esc(v.code)}</td><td>${esc(v.sku)}</td><td>${esc(v.packaging)}</td><td class="num">${num(v.pieces_per_pack)}</td><td class="num">${ghs(v.cost_pesewas)}</td><td class="num">${ghs(v.retail_pesewas)}</td><td class="num">${num(v.reorder_level)}</td><td>${esc(v.location)}</td><td>${+v.active ? 'Yes' : 'No'}</td><td><button type="button" class="small" data-edit="${v.id}">Edit</button></td></tr>`).join('') + '</tbody></table>'
-    : '<p class="sub">No variations yet. Loading the opening stock creates FG1–FG7.</p>';
+  $('varTable').innerHTML = cat.variations.length ? `<table><thead><tr><th>${t('code')}</th><th>${t('product')}</th><th>${t('packaging')}</th><th class="num">${t('ppp')}</th><th class="num">${t('costPcS')}</th><th class="num">${t('retailPackS')}</th><th class="num">${t('reorderLvl')}</th><th>${t('location')}</th><th>${t('active')}</th><th></th></tr></thead><tbody>`
+    + cat.variations.map(v => `<tr><td>${esc(v.code)}</td><td>${esc(v.sku)}</td><td>${esc(packName(v.packaging))}</td><td class="num">${num(v.pieces_per_pack)}</td><td class="num">${ghs(v.cost_pesewas)}</td><td class="num">${ghs(v.retail_pesewas)}</td><td class="num">${num(v.reorder_level)}</td><td>${esc(v.location)}</td><td>${t(+v.active ? 'yes' : 'no')}</td><td><button type="button" class="small" data-edit="${v.id}">${t('edit')}</button></td></tr>`).join('') + '</tbody></table>'
+    : `<p class="sub">${t('noVars')}</p>`;
   $('varTable').querySelectorAll('[data-edit]').forEach(b => b.onclick = () => editVar(cat.variations.find(v => String(v.id) === b.dataset.edit)));
   renderTiers(cat.tiers);
 }
 function editVar(v) {
-  $('varFormTitle').textContent = v ? 'Edit ' + v.code : 'Add variation';
+  $('varFormTitle').textContent = v ? t('editVar', {c: v.code}) : t('addVar');
   $('vId').value = v ? v.id : ''; $('vCode').value = v ? v.code : ''; $('vSku').value = v ? v.sku : 'U01';
   $('vPack').value = v ? v.packaging : ''; $('vPpp').value = v ? v.pieces_per_pack : 1;
   $('vCost').value = v ? (v.cost_pesewas / 100).toFixed(2) : ''; $('vRetail').value = v ? (v.retail_pesewas / 100).toFixed(2) : '';
@@ -314,37 +403,37 @@ $('varForm').onsubmit = async e => {
   const j = await api('save_variation', {id: $('vId').value, code: $('vCode').value, sku: $('vSku').value, packaging: $('vPack').value, pieces_per_pack: $('vPpp').value,
     cost: $('vCost').value, retail: $('vRetail').value, reorder_level: $('vReorder').value, location: $('vLoc').value, active: $('vActive').value === '1'});
   if (!j.ok) return msg('varMsg', j.error);
-  msg('varMsg', 'Saved.', true); editVar(null); loadCatalog(j);
+  msg('varMsg', t('saved'), true); editVar(null); loadCatalog(j);
 };
 
 // ---- tiers ----
 function renderTiers(tiers) {
-  $('tierRows').innerHTML = tiers.map((t, i) => tierRow(i, (t.threshold_pesewas / 100).toFixed(2), t.percent)).join('');
+  $('tierRows').innerHTML = tiers.map((x, i) => tierRow(i, (x.threshold_pesewas / 100).toFixed(2), x.percent)).join('');
 }
 function tierRow(i, th, pct) {
-  return `<div class="row tier" style="margin-bottom:6px"><label for="tTh${i}">Over GHS <input id="tTh${i}" class="tTh" type="number" min="0" step="0.01" value="${esc(th)}"></label>
-    <label for="tPct${i}">Discount % <input id="tPct${i}" class="tPct" type="number" min="0" max="100" step="1" value="${esc(pct)}"></label>
-    <button type="button" class="small" onclick="this.parentNode.remove()">Remove</button></div>`;
+  return `<div class="row tier" style="margin-bottom:6px"><label for="tTh${i}">${t('overGhs')} <input id="tTh${i}" class="tTh" type="number" min="0" step="0.01" value="${esc(th)}"></label>
+    <label for="tPct${i}">${t('discPct')} <input id="tPct${i}" class="tPct" type="number" min="0" max="100" step="1" value="${esc(pct)}"></label>
+    <button type="button" class="small" onclick="this.parentNode.remove()">${t('remove')}</button></div>`;
 }
 $('tierAdd').onclick = () => $('tierRows').insertAdjacentHTML('beforeend', tierRow(Date.now(), '', ''));
 $('tierSave').onclick = async () => {
   const tiers = [...document.querySelectorAll('.tier')].map(r => ({threshold: r.querySelector('.tTh').value, percent: r.querySelector('.tPct').value}));
   const j = await api('save_tiers', {tiers});
   if (!j.ok) return msg('tierMsg', j.error);
-  msg('tierMsg', 'Saved.', true); loadCatalog(j);
+  msg('tierMsg', t('saved'), true); loadCatalog(j);
 };
 
 // ---- batches & recent ----
 async function loadBatches() {
   const j = await api('batches', {}); if (!j.ok) return;
-  $('batchTable').innerHTML = j.batches.length ? '<table><thead><tr><th>#</th><th>When</th><th>Kind</th><th>Label</th><th class="num">Rows</th><th></th></tr></thead><tbody>'
-    + j.batches.map(b => `<tr class="${+b.undone ? 'void' : ''}"><td>${b.id}</td><td>${esc(new Date(b.created_at).toLocaleString('en-GB'))}</td><td>${esc(b.kind)}</td><td>${esc(b.label)}</td><td class="num">${num(b.rows)}</td><td>${+b.undone ? 'undone' : `<button type="button" class="small" data-undo="${b.id}">Undo</button>`}</td></tr>`).join('') + '</tbody></table>'
-    : '<p class="sub">No imports yet.</p>';
+  $('batchTable').innerHTML = j.batches.length ? `<table><thead><tr><th>#</th><th>${t('when')}</th><th>${t('kind')}</th><th>${t('label')}</th><th class="num">${t('rows')}</th><th></th></tr></thead><tbody>`
+    + j.batches.map(b => `<tr class="${+b.undone ? 'void' : ''}"><td>${b.id}</td><td>${esc(new Date(b.created_at).toLocaleString(LOC()))}</td><td>${esc(t('kind_' + b.kind))}</td><td>${esc(b.label)}</td><td class="num">${num(b.rows)}</td><td>${+b.undone ? t('undone') : `<button type="button" class="small" data-undo="${b.id}">${t('undo')}</button>`}</td></tr>`).join('') + '</tbody></table>'
+    : `<p class="sub">${t('noImports')}</p>`;
   $('batchTable').querySelectorAll('[data-undo]').forEach(b => b.onclick = async () => {
-    if (!confirm('Undo import #' + b.dataset.undo + '? All its rows stop counting.')) return;
+    if (!confirm(t('confirmUndo', {n: b.dataset.undo}))) return;
     const r = await api('undo_batch', {id: +b.dataset.undo});
     if (!r.ok) return msg('batchMsg', r.error);
-    msg('batchMsg', 'Undone.', true); loadBatches(); loadRecent(); loadSeed();
+    msg('batchMsg', t('undoneMsg'), true); loadBatches(); loadRecent(); loadSeed();
   });
 }
 async function loadRecent() {
@@ -352,16 +441,17 @@ async function loadRecent() {
   if (!r || !r.ok) return;
   $('custList').innerHTML = [...new Set(r.ledger.map(m => m.customer).filter(Boolean))].map(c => `<option value="${esc(c)}">`).join('');
   const rows = r.ledger.slice(0, 200);
-  $('recentTable').innerHTML = rows.length ? '<table><thead><tr><th>Date</th><th>Code</th><th>Type</th><th class="num">Qty</th><th class="num">Amount</th><th>Customer</th><th></th></tr></thead><tbody>'
-    + rows.map(m => `<tr><td>${esc(m.date)}</td><td>${esc(m.code)}</td><td>${esc(m.type)}</td><td class="num">${num(m.qty)}</td><td class="num">${m.amount ? ghs(m.amount) : ''}</td><td>${esc(m.customer)}</td><td><button type="button" class="small" data-void="${m.id}">Void</button></td></tr>`).join('') + '</tbody></table>'
-    : '<p class="sub">No movements in the last 30 days.</p>';
+  $('recentTable').innerHTML = rows.length ? `<table><thead><tr><th>${t('date')}</th><th>${t('code')}</th><th>${t('type')}</th><th class="num">${t('qty')}</th><th class="num">${t('amount')}</th><th>${t('customer')}</th><th></th></tr></thead><tbody>`
+    + rows.map(m => `<tr><td>${esc(m.date)}</td><td>${esc(m.code)}</td><td>${esc(t('type_' + m.type))}</td><td class="num">${num(m.qty)}</td><td class="num">${m.amount ? ghs(m.amount) : ''}</td><td>${esc(m.customer)}</td><td><button type="button" class="small" data-void="${m.id}">${t('void')}</button></td></tr>`).join('') + '</tbody></table>'
+    : `<p class="sub">${t('noRecent')}</p>`;
   $('recentTable').querySelectorAll('[data-void]').forEach(b => b.onclick = async () => {
-    if (!confirm('Void this movement?')) return;
+    if (!confirm(t('confirmVoid'))) return;
     const j = await api('void_movement', {id: +b.dataset.void});
     if (j.ok) b.closest('tr').classList.add('void'), b.remove(); else alert(j.error);
   });
 }
 
+async function rerender() { if (!$('app').hidden) { await Promise.all([loadCatalog(), loadSeed(), loadBatches(), loadRecent()]); } }
 showLock();
 </script>
 </body>

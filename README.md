@@ -4,14 +4,14 @@ Public, read-only sales and inventory reports for **U01 Wiper blade** and **U02 
 
 | Path | What |
 | --- | --- |
-| `index.html` | Report page (public): period/product/variation filters, KPI tiles vs previous period, sales trend (stacked SVG bars, revenue/units, hover tooltips, table view), sales by variation, top customers, sales by discount tier, stock on hand & reorder, stock movement ledger. Every table sorts and exports CSV. Light/dark, phone width. |
-| `admin.html` | Admin (PIN): load opening stock, CSV / Excel upload (check first, all-or-nothing, template download), record a movement, edit variations, discount tiers, undo imports, void movements. |
+| `index.html` | Report page (public): hero with period revenue and per-product cards, KPI tiles with sparklines and meters (pieces, margin, avg price vs list, discounts, sale lines, stock, stock value), auto-generated highlights (best day, top seller, busiest weekday, selling days, running low / slow movers, sell-through, discounts), sales trend (stacked SVG bars, revenue/units, table view), running total vs previous period, packaging mix, weekly rhythm, 26-week sales calendar heatmap, stock health cards (days of cover, sell-through, value), price & margin by packaging, top customers, discount tiers, stock movement ledger. Tables sort and export CSV. Light/dark, phone width, English / 中文 switch. |
+| `admin.html` | Admin (PIN): load opening stock, CSV / Excel upload (check first, all-or-nothing, template download), record a movement, edit variations, discount tiers, undo imports, void movements., English / 中文 switch. |
 | `api.php` | JSON API. Public: `health`, `report`. Admin (`X-Session` token): see header comment. |
 | `lib/db.php` | SQLite store at `data/wiper.sqlite` (gitignored, created at runtime with a deny `.htaccess`), migrations, PIN, sessions, rate limit. |
 | `lib/xlsx.php` | Minimal .xlsx reader (all sheets; needs PHP `zip`, which Hostinger has as far as I know — if not, uploads fall back to CSV with a clear message). |
 | `lib/seed.php` | Opening stock as of 2026-09-28 from the Google Sheet "20260928 Wiper_blades_Inventory" (tab "For OS"). Loaded only when the admin presses the button. |
 
-No build step, no framework, no external scripts. PHP 8.3 with `pdo_sqlite`.
+No build step, no framework, no external scripts. Language: the EN / 中文 switch on either page is remembered per browser (`localStorage` `wiper_lang`; first visit follows the browser language). Translations live in the `I18N` objects in `index.html` and `admin.html`; seeded packaging names have Chinese names in `PACK_ZH`. Server error messages and the opening-stock notes stay in English. PHP 8.3 with `pdo_sqlite`.
 
 ## Data model
 - `variations`: FG1–FG6 are packagings of U01 (blue box, brown box, white box, white plastic, bundle, loose); FG7 is U02 (box of 100). Cost per piece, retail per pack, reorder level in pieces.
