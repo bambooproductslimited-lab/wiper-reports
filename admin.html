@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Wiper Report Admin</title>
+<style>
+:root { color-scheme: light; --bg: #f4f4f2; --surface: #fcfcfb; --border: #e1e0db; --text: #0b0b0b; --text-2: #52514e; --muted: #7a7974; --grid: #e7e6e1; --accent: #2a78d6; --good: #1a7f37; --bad: #c62828; --warn: #b26b00; --warn-bg: #fff4dc; --bad-bg: #fde8e7; }
+@media (prefers-color-scheme: dark) { :root:where(:not([data-theme="light"])) { color-scheme: dark; --bg: #111110; --surface: #1a1a19; --border: #33332f; --text: #f0efec; --text-2: #c3c2b7; --muted: #94938a; --grid: #2c2c29; --accent: #3987e5; --good: #4caf6a; --bad: #ef6b6b; --warn: #e0a030; --warn-bg: #3a2e14; --bad-bg: #3d1d1c; } }
+:root[data-theme="dark"] { color-scheme: dark; --bg: #111110; --surface: #1a1a19; --border: #33332f; --text: #f0efec; --text-2: #c3c2b7; --muted: #94938a; --grid: #2c2c29; --accent: #3987e5; --good: #4caf6a; --bad: #ef6b6b; --warn: #e0a030; --warn-bg: #3a2e14; --bad-bg: #3d1d1c; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.wrap { max-width: 1100px; margin: 0 auto; padding: 16px; }
+header { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+h1 { font-size: 22px; margin: 0; } h2 { font-size: 16px; margin: 0 0 8px; }
+.sub { color: var(--text-2); font-size: 13px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
+label { display: flex; flex-direction: column; font-size: 12px; color: var(--text-2); gap: 3px; }
+select, input, button, textarea { font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; min-height: 38px; }
+input[type=number] { width: 110px; }
+button { cursor: pointer; } button:hover { border-color: var(--accent); }
+button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+button.small { min-height: 30px; padding: 3px 10px; font-size: 13px; }
+.msg { margin-top: 10px; font-size: 14px; }
+.msg.ok { color: var(--good); } .msg.err { color: var(--bad); }
+.errors { background: var(--bad-bg); border-radius: 8px; padding: 8px 12px; margin-top: 8px; font-size: 13px; max-height: 260px; overflow: auto; }
+.warnbox { background: var(--warn-bg); border: 1px solid var(--warn); border-radius: 8px; padding: 8px 12px; margin: 10px 0; font-size: 13px; }
+.warnbox ul { margin: 4px 0 0 18px; padding: 0; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+th, td { padding: 6px 8px; border-bottom: 1px solid var(--grid); text-align: left; white-space: nowrap; }
+th { color: var(--text-2); font-weight: 600; }
+td.num, th.num { text-align: right; }
+tr.void td { text-decoration: line-through; color: var(--muted); }
+code, pre { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px; }
+pre { background: var(--bg); padding: 8px; border-radius: 8px; overflow-x: auto; }
+#lock { max-width: 380px; margin: 10vh auto; }
+a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div><h1>Admin</h1><div class="sub">wiper.chou.net · data entry &amp; imports (reports stay public)</div></div>
+    <div class="row"><a href="./">← Reports</a><button type="button" class="small" id="logoutBtn" hidden>Sign out</button></div>
+  </header>
+
+  <section class="card" id="lock">
+    <div id="loginBox" hidden>
+      <h2>Sign in</h2>
+      <form id="loginForm" class="row">
+        <label for="loginPin">Admin PIN <input id="loginPin" type="password" inputmode="numeric" autocomplete="current-password" required></label>
+        <button class="primary">Sign in</button>
+      </form>
+    </div>
+    <div id="setupBox" hidden>
+      <h2>First-time setup</h2>
+      <p class="sub">Enter the one-time setup code and choose an admin PIN (4–8 digits).</p>
+      <form id="setupForm" class="row">
+        <label for="setupCode">Setup code <input id="setupCode" autocomplete="off" required></label>
+        <label for="setupPin">New PIN <input id="setupPin" type="password" inputmode="numeric" autocomplete="new-password" required></label>
+        <button class="primary">Save PIN</button>
+      </form>
+    </div>
+    <div class="msg" id="lockMsg"></div>
+  </section>
+
+  <div id="app" hidden>
+    <section class="card">
+      <h2>Opening stock</h2>
+      <div id="seedBox" class="sub">Loading…</div>
+    </section>
+
+    <section class="card">
+      <h2>Import CSV</h2>
+      <p class="sub">Columns (header row required, any order): <code>date, sku, variation, type, qty, unit_price, customer, note, order_ref</code>.<br>
+        <code>date</code> YYYY-MM-DD or DD/MM/YYYY · <code>sku</code> U01 or U02 · <code>variation</code> e.g. FG1 (can be blank when the product has only one) ·
+        <code>type</code> sale, receipt, adjustment or transfer · <code>qty</code> whole pieces (sale/receipt positive; adjustment/transfer signed, e.g. −20) ·
+        <code>unit_price</code> GHS per piece for sales (blank = retail price) · <code>order_ref</code> groups lines into one order for discount tiers.
+        A file with any bad row is rejected as a whole.</p>
+      <pre>date,sku,variation,type,qty,unit_price,customer,note,order_ref
+2026-10-01,U01,FG5,sale,100,14,Kofi Auto Parts,,INV-101
+2026-10-01,U02,FG7,sale,500,4.75,Kofi Auto Parts,,INV-101
+2026-10-02,U01,FG6,adjustment,-3,,,damaged,</pre>
+      <div class="row">
+        <label for="csvFile">CSV file <input id="csvFile" type="file" accept=".csv,text/csv"></label>
+        <label for="csvLabel">Label <input id="csvLabel" placeholder="e.g. October sales"></label>
+        <button type="button" id="csvCheck">Check file</button>
+        <button type="button" class="primary" id="csvImport" disabled>Import</button>
+      </div>
+      <div class="msg" id="csvMsg"></div>
+    </section>
+
+    <section class="card">
+      <h2>Record a movement</h2>
+      <form id="mvForm" class="row">
+        <label for="mvDate">Date <input id="mvDate" type="date" required></label>
+        <label for="mvVar">Variation <select id="mvVar" required></select></label>
+        <label for="mvType">Type
+          <select id="mvType"><option value="sale">Sale</option><option value="receipt">Receipt (stock in)</option><option value="adjustment">Adjustment (+/−)</option><option value="transfer">Transfer (+/−)</option></select>
+        </label>
+        <label for="mvUnit">Count in <select id="mvUnit"><option value="pcs">Pieces</option><option value="packs">Packs</option></select></label>
+        <label for="mvQty">Qty <input id="mvQty" type="number" step="1" required></label>
+        <label for="mvPrice">Price/piece GHS <input id="mvPrice" type="number" step="0.01" min="0"></label>
+        <label for="mvCustomer">Customer <input id="mvCustomer" list="custList"></label>
+        <label for="mvOrder">Order ref <input id="mvOrder"></label>
+        <label for="mvNote">Note <input id="mvNote"></label>
+        <button class="primary">Save</button>
+      </form>
+      <div class="sub" id="mvHint"></div>
+      <div class="msg" id="mvMsg"></div>
+    </section>
+
+    <section class="card">
+      <h2>Variations</h2>
+      <p class="sub">Cost is per piece; retail is per pack. Reorder level is in pieces (0 = only the sales-rate rule applies).</p>
+      <div class="table-wrap" id="varTable"></div>
+      <h2 style="margin-top:14px" id="varFormTitle">Add variation</h2>
+      <form id="varForm" class="row">
+        <input type="hidden" id="vId">
+        <label for="vCode">Code <input id="vCode" required size="6"></label>
+        <label for="vSku">Product <select id="vSku"><option value="U01">U01 Wiper blade</option><option value="U02">U02 Spark plugs</option></select></label>
+        <label for="vPack">Packaging <input id="vPack" required></label>
+        <label for="vPpp">Pieces/pack <input id="vPpp" type="number" min="1" step="1" required></label>
+        <label for="vCost">Cost/piece GHS <input id="vCost" type="number" min="0" step="0.01" required></label>
+        <label for="vRetail">Retail/pack GHS <input id="vRetail" type="number" min="0" step="0.01" required></label>
+        <label for="vReorder">Reorder level <input id="vReorder" type="number" min="0" step="1" value="0"></label>
+        <label for="vLoc">Location <input id="vLoc" size="6"></label>
+        <label for="vActive">Active <select id="vActive"><option value="1">Yes</option><option value="0">No</option></select></label>
+        <button class="primary">Save</button>
+        <button type="button" id="vCancel">Clear</button>
+      </form>
+      <div class="msg" id="varMsg"></div>
+    </section>
+
+    <section class="card">
+      <h2>Discount tiers</h2>
+      <p class="sub">An order counts in a tier when its total is <em>over</em> the threshold. Used for the "Sales by discount tier" report.</p>
+      <div id="tierRows"></div>
+      <div class="row" style="margin-top:8px"><button type="button" id="tierAdd">Add tier</button><button type="button" class="primary" id="tierSave">Save tiers</button></div>
+      <div class="msg" id="tierMsg"></div>
+    </section>
+
+    <section class="card">
+      <h2>Imports</h2>
+      <div class="table-wrap" id="batchTable"></div>
+      <div class="msg" id="batchMsg"></div>
+    </section>
+
+    <section class="card">
+      <h2>Recent movements (last 30 days)</h2>
+      <p class="sub">Void a wrong entry and it stops counting in every report. To remove a whole import, use Undo above.</p>
+      <div class="table-wrap" id="recentTable"></div>
+    </section>
+  </div>
+</div>
+<datalist id="custList"></datalist>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ghs = p => 'GHS ' + (p / 100).toLocaleString('en-GH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const num = n => Number(n).toLocaleString('en-GH');
+try { const t = localStorage.getItem('wiper_theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+let token = ''; try { token = sessionStorage.getItem('wiper_token') || ''; } catch (e) {}
+let cat = null, csvText = '';
+
+async function api(action, body) {
+  const r = await fetch('api.php?action=' + action, {method: body === undefined ? 'GET' : 'POST', headers: {'Content-Type': 'application/json', 'X-Session': token}, body: body === undefined ? undefined : JSON.stringify(body)});
+  const j = await r.json().catch(() => ({ok: false, error: 'Bad response from server'}));
+  if (j.code === 'auth') { setToken(''); showLock(); }
+  return j;
+}
+function setToken(t) { token = t; try { t ? sessionStorage.setItem('wiper_token', t) : sessionStorage.removeItem('wiper_token'); } catch (e) {} }
+function msg(id, text, ok) { $(id).className = 'msg ' + (ok ? 'ok' : 'err'); $(id).textContent = text; }
+
+async function showLock() {
+  const s = await api('status');
+  if (s.signed_in) return showApp();
+  $('app').hidden = true; $('lock').hidden = false; $('logoutBtn').hidden = true;
+  $('loginBox').hidden = !s.pin_set; $('setupBox').hidden = s.pin_set;
+}
+$('loginForm').onsubmit = async e => {
+  e.preventDefault();
+  const j = await api('login', {pin: $('loginPin').value}); $('loginPin').value = '';
+  if (!j.ok) return msg('lockMsg', j.error);
+  setToken(j.token); showApp();
+};
+$('setupForm').onsubmit = async e => {
+  e.preventDefault();
+  const j = await api('setup', {code: $('setupCode').value, pin: $('setupPin').value});
+  if (!j.ok) return msg('lockMsg', j.error);
+  setToken(j.token); showApp();
+};
+$('logoutBtn').onclick = async () => { await api('logout', {}); setToken(''); showLock(); };
+
+async function showApp() {
+  $('lock').hidden = true; $('app').hidden = false; $('logoutBtn').hidden = false; $('lockMsg').textContent = '';
+  if (!$('mvDate').value) $('mvDate').value = new Date().toISOString().slice(0, 10);
+  await Promise.all([loadCatalog(), loadSeed(), loadBatches(), loadRecent()]);
+}
+
+// ---- opening stock ----
+async function loadSeed() {
+  const j = await api('seed_preview', {}); if (!j.ok) return;
+  const total = j.rows.reduce((a, r) => a + r.value_cost_pesewas, 0);
+  $('seedBox').innerHTML = `<p class="sub">Source: ${esc(j.source)} · date ${esc(j.date)} · location ${esc(j.location)}</p>
+    <div class="table-wrap"><table><thead><tr><th>Code</th><th>Product</th><th>Packaging</th><th class="num">Pcs/pack</th><th class="num">Opening pcs</th><th class="num">Cost/pc</th><th class="num">Retail/pack</th><th class="num">Value at cost</th></tr></thead><tbody>
+    ${j.rows.map(r => `<tr><td>${esc(r.code)}</td><td>${esc(r.sku)}</td><td>${esc(r.packaging)}</td><td class="num">${num(r.pieces_per_pack)}</td><td class="num">${num(r.opening)}</td><td class="num">${ghs(r.cost_pesewas)}</td><td class="num">${ghs(r.retail_pesewas)}</td><td class="num">${ghs(r.value_cost_pesewas)}</td></tr>`).join('')}
+    <tr><th colspan="7">Total</th><th class="num">${ghs(total)}</th></tr></tbody></table></div>
+    <div class="warnbox"><b>The source sheets disagree — check before loading:</b><ul>${j.discrepancies.map(d => `<li>${esc(d)}</li>`).join('')}</ul></div>
+    ${j.loaded_at ? `<p class="msg ok">Loaded ${esc(new Date(j.loaded_at).toLocaleString('en-GB'))}. To reload, undo the "Opening stock" import below. You can also correct counts with an adjustment.</p>`
+      : `<button type="button" class="primary" id="seedLoad">Load opening stock</button>`}<div class="msg" id="seedMsg"></div>`;
+  if ($('seedLoad')) $('seedLoad').onclick = async () => {
+    if (!confirm('Load these opening counts as of ' + j.date + '?')) return;
+    const r = await api('seed_load', {});
+    if (!r.ok) return msg('seedMsg', r.error);
+    await showApp();
+  };
+}
+
+// ---- CSV import ----
+$('csvFile').onchange = async () => { csvText = $('csvFile').files[0] ? await $('csvFile').files[0].text() : ''; $('csvImport').disabled = true; $('csvMsg').textContent = ''; };
+async function runImport(dry) {
+  if (!csvText) return msg('csvMsg', 'Choose a CSV file first.');
+  const j = await api('import', {csv: csvText, label: $('csvLabel').value || ($('csvFile').files[0] || {}).name, dry_run: dry});
+  if (!j.ok) {
+    $('csvImport').disabled = true;
+    msg('csvMsg', j.error);
+    if (j.errors) $('csvMsg').insertAdjacentHTML('beforeend', '<div class="errors">' + j.errors.map(e => `Line ${e.line}: ${esc(e.error)}`).join('<br>') + '</div>');
+    return;
+  }
+  const s = j.summary;
+  msg('csvMsg', `${dry ? 'File OK' : 'Imported'}: ${num(s.rows)} rows, ${s.from} to ${s.to}, ${num(s.sales_pieces)} pieces sold, revenue ${ghs(s.revenue_pesewas)}.` + (dry ? ' Press Import to save.' : ''), true);
+  $('csvImport').disabled = !dry;
+  if (!dry) { csvText = ''; $('csvFile').value = ''; loadBatches(); loadRecent(); }
+}
+$('csvCheck').onclick = () => runImport(true);
+$('csvImport').onclick = () => runImport(false);
+
+// ---- manual movement ----
+function curVar() { return cat && cat.variations.find(v => String(v.id) === $('mvVar').value); }
+function mvHint() {
+  const v = curVar(); if (!v) return;
+  if ($('mvType').value === 'sale' && !$('mvPrice').dataset.touched) $('mvPrice').value = (v.retail_pesewas / v.pieces_per_pack / 100).toFixed(2);
+  $('mvPrice').disabled = $('mvType').value !== 'sale';
+  const q = +$('mvQty').value || 0, pcs = $('mvUnit').value === 'packs' ? q * v.pieces_per_pack : q;
+  $('mvHint').textContent = `${v.code}: ${v.pieces_per_pack} pcs/pack, retail ${ghs(v.retail_pesewas)}/pack.` + (q ? ` = ${num(pcs)} pieces` + ($('mvType').value === 'sale' ? `, ${ghs(Math.round(pcs * (+$('mvPrice').value || 0) * 100))}` : '') : '');
+}
+['mvVar', 'mvType', 'mvUnit', 'mvQty', 'mvPrice'].forEach(id => $(id).addEventListener('input', mvHint));
+$('mvVar').addEventListener('change', () => { delete $('mvPrice').dataset.touched; mvHint(); });
+$('mvPrice').addEventListener('input', () => $('mvPrice').dataset.touched = 1);
+$('mvForm').onsubmit = async e => {
+  e.preventDefault();
+  const v = curVar(); if (!v) return msg('mvMsg', 'Choose a variation.');
+  const q = parseInt($('mvQty').value, 10), pcs = $('mvUnit').value === 'packs' ? q * v.pieces_per_pack : q;
+  const j = await api('add_movement', {date: $('mvDate').value, sku: v.sku, variation: v.code, type: $('mvType').value, qty: pcs,
+    unit_price: $('mvType').value === 'sale' ? $('mvPrice').value : '', customer: $('mvCustomer').value, order_ref: $('mvOrder').value, note: $('mvNote').value});
+  if (!j.ok) return msg('mvMsg', j.error);
+  msg('mvMsg', `Saved ${$('mvType').value} of ${num(pcs)} pcs ${v.code}.`, true);
+  $('mvQty').value = ''; $('mvNote').value = ''; mvHint(); loadRecent();
+};
+
+// ---- variations ----
+async function loadCatalog(j) {
+  j = j || await api('catalog', {}); if (!j.ok) return;
+  cat = j;
+  $('mvVar').innerHTML = cat.variations.filter(v => +v.active).map(v => `<option value="${v.id}">${esc(v.code)} · ${esc(v.sku)} · ${esc(v.packaging)}</option>`).join('');
+  mvHint();
+  $('varTable').innerHTML = cat.variations.length ? '<table><thead><tr><th>Code</th><th>Product</th><th>Packaging</th><th class="num">Pcs/pack</th><th class="num">Cost/pc</th><th class="num">Retail/pack</th><th class="num">Reorder lvl</th><th>Location</th><th>Active</th><th></th></tr></thead><tbody>'
+    + cat.variations.map(v => `<tr><td>${esc(v.code)}</td><td>${esc(v.sku)}</td><td>${esc(v.packaging)}</td><td class="num">${num(v.pieces_per_pack)}</td><td class="num">${ghs(v.cost_pesewas)}</td><td class="num">${ghs(v.retail_pesewas)}</td><td class="num">${num(v.reorder_level)}</td><td>${esc(v.location)}</td><td>${+v.active ? 'Yes' : 'No'}</td><td><button type="button" class="small" data-edit="${v.id}">Edit</button></td></tr>`).join('') + '</tbody></table>'
+    : '<p class="sub">No variations yet. Loading the opening stock creates FG1–FG7.</p>';
+  $('varTable').querySelectorAll('[data-edit]').forEach(b => b.onclick = () => editVar(cat.variations.find(v => String(v.id) === b.dataset.edit)));
+  renderTiers(cat.tiers);
+}
+function editVar(v) {
+  $('varFormTitle').textContent = v ? 'Edit ' + v.code : 'Add variation';
+  $('vId').value = v ? v.id : ''; $('vCode').value = v ? v.code : ''; $('vSku').value = v ? v.sku : 'U01';
+  $('vPack').value = v ? v.packaging : ''; $('vPpp').value = v ? v.pieces_per_pack : 1;
+  $('vCost').value = v ? (v.cost_pesewas / 100).toFixed(2) : ''; $('vRetail').value = v ? (v.retail_pesewas / 100).toFixed(2) : '';
+  $('vReorder').value = v ? v.reorder_level : 0; $('vLoc').value = v ? v.location : 'A2'; $('vActive').value = v ? String(+v.active) : '1';
+  if (v) $('varForm').scrollIntoView({behavior: 'smooth', block: 'center'});
+}
+$('vCancel').onclick = () => editVar(null);
+$('varForm').onsubmit = async e => {
+  e.preventDefault();
+  const j = await api('save_variation', {id: $('vId').value, code: $('vCode').value, sku: $('vSku').value, packaging: $('vPack').value, pieces_per_pack: $('vPpp').value,
+    cost: $('vCost').value, retail: $('vRetail').value, reorder_level: $('vReorder').value, location: $('vLoc').value, active: $('vActive').value === '1'});
+  if (!j.ok) return msg('varMsg', j.error);
+  msg('varMsg', 'Saved.', true); editVar(null); loadCatalog(j);
+};
+
+// ---- tiers ----
+function renderTiers(tiers) {
+  $('tierRows').innerHTML = tiers.map((t, i) => tierRow(i, (t.threshold_pesewas / 100).toFixed(2), t.percent)).join('');
+}
+function tierRow(i, th, pct) {
+  return `<div class="row tier" style="margin-bottom:6px"><label for="tTh${i}">Over GHS <input id="tTh${i}" class="tTh" type="number" min="0" step="0.01" value="${esc(th)}"></label>
+    <label for="tPct${i}">Discount % <input id="tPct${i}" class="tPct" type="number" min="0" max="100" step="1" value="${esc(pct)}"></label>
+    <button type="button" class="small" onclick="this.parentNode.remove()">Remove</button></div>`;
+}
+$('tierAdd').onclick = () => $('tierRows').insertAdjacentHTML('beforeend', tierRow(Date.now(), '', ''));
+$('tierSave').onclick = async () => {
+  const tiers = [...document.querySelectorAll('.tier')].map(r => ({threshold: r.querySelector('.tTh').value, percent: r.querySelector('.tPct').value}));
+  const j = await api('save_tiers', {tiers});
+  if (!j.ok) return msg('tierMsg', j.error);
+  msg('tierMsg', 'Saved.', true); loadCatalog(j);
+};
+
+// ---- batches & recent ----
+async function loadBatches() {
+  const j = await api('batches', {}); if (!j.ok) return;
+  $('batchTable').innerHTML = j.batches.length ? '<table><thead><tr><th>#</th><th>When</th><th>Kind</th><th>Label</th><th class="num">Rows</th><th></th></tr></thead><tbody>'
+    + j.batches.map(b => `<tr class="${+b.undone ? 'void' : ''}"><td>${b.id}</td><td>${esc(new Date(b.created_at).toLocaleString('en-GB'))}</td><td>${esc(b.kind)}</td><td>${esc(b.label)}</td><td class="num">${num(b.rows)}</td><td>${+b.undone ? 'undone' : `<button type="button" class="small" data-undo="${b.id}">Undo</button>`}</td></tr>`).join('') + '</tbody></table>'
+    : '<p class="sub">No imports yet.</p>';
+  $('batchTable').querySelectorAll('[data-undo]').forEach(b => b.onclick = async () => {
+    if (!confirm('Undo import #' + b.dataset.undo + '? All its rows stop counting.')) return;
+    const r = await api('undo_batch', {id: +b.dataset.undo});
+    if (!r.ok) return msg('batchMsg', r.error);
+    msg('batchMsg', 'Undone.', true); loadBatches(); loadRecent(); loadSeed();
+  });
+}
+async function loadRecent() {
+  const r = await fetch('api.php?action=report&from=' + new Date(Date.now() - 29 * 864e5).toISOString().slice(0, 10)).then(r => r.json()).catch(() => null);
+  if (!r || !r.ok) return;
+  $('custList').innerHTML = [...new Set(r.ledger.map(m => m.customer).filter(Boolean))].map(c => `<option value="${esc(c)}">`).join('');
+  const rows = r.ledger.slice(0, 200);
+  $('recentTable').innerHTML = rows.length ? '<table><thead><tr><th>Date</th><th>Code</th><th>Type</th><th class="num">Qty</th><th class="num">Amount</th><th>Customer</th><th></th></tr></thead><tbody>'
+    + rows.map(m => `<tr><td>${esc(m.date)}</td><td>${esc(m.code)}</td><td>${esc(m.type)}</td><td class="num">${num(m.qty)}</td><td class="num">${m.amount ? ghs(m.amount) : ''}</td><td>${esc(m.customer)}</td><td><button type="button" class="small" data-void="${m.id}">Void</button></td></tr>`).join('') + '</tbody></table>'
+    : '<p class="sub">No movements in the last 30 days.</p>';
+  $('recentTable').querySelectorAll('[data-void]').forEach(b => b.onclick = async () => {
+    if (!confirm('Void this movement?')) return;
+    const j = await api('void_movement', {id: +b.dataset.void});
+    if (j.ok) b.closest('tr').classList.add('void'), b.remove(); else alert(j.error);
+  });
+}
+
+showLock();
+</script>
+</body>
+</html>

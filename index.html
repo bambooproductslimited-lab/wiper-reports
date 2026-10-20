@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Wipers & Spark Plugs</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%232a78d6'/><path d='M6 24 L24 8' stroke='white' stroke-width='3' stroke-linecap='round'/><circle cx='24' cy='8' r='3' fill='white'/></svg>">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f4f4f2; --surface: #fcfcfb; --surface-2: #f0efec; --border: #e1e0db;
+  --text: #0b0b0b; --text-2: #52514e; --muted: #7a7974; --grid: #e7e6e1;
+  --accent: #2a78d6; --s1: #2a78d6; --s2: #eb6834;
+  --good: #1a7f37; --warn: #b26b00; --bad: #c62828; --warn-bg: #fff4dc; --bad-bg: #fde8e7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --bg: #111110; --surface: #1a1a19; --surface-2: #232321; --border: #33332f;
+    --text: #f0efec; --text-2: #c3c2b7; --muted: #94938a; --grid: #2c2c29;
+    --accent: #3987e5; --s1: #3987e5; --s2: #d95926;
+    --good: #4caf6a; --warn: #e0a030; --bad: #ef6b6b; --warn-bg: #3a2e14; --bad-bg: #3d1d1c;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #111110; --surface: #1a1a19; --surface-2: #232321; --border: #33332f;
+  --text: #f0efec; --text-2: #c3c2b7; --muted: #94938a; --grid: #2c2c29;
+  --accent: #3987e5; --s1: #3987e5; --s2: #d95926;
+  --good: #4caf6a; --warn: #e0a030; --bad: #ef6b6b; --warn-bg: #3a2e14; --bad-bg: #3d1d1c;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 16px; }
+header { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+h1 { font-size: 22px; margin: 0; }
+h2 { font-size: 16px; margin: 0 0 4px; }
+.sub { color: var(--text-2); font-size: 13px; }
+.muted { color: var(--muted); }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; min-width: 0; }
+.card-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 8px 0 12px; }
+.filters label { display: flex; flex-direction: column; font-size: 12px; color: var(--text-2); gap: 3px; }
+select, input, button { font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; min-height: 38px; }
+button { cursor: pointer; }
+button:hover { border-color: var(--accent); }
+button.small { min-height: 30px; padding: 4px 10px; font-size: 13px; }
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; border-radius: 0; min-height: 30px; padding: 4px 12px; font-size: 13px; background: var(--surface); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
+.kpi .label { font-size: 12px; color: var(--text-2); }
+.kpi .value { font-size: 24px; font-weight: 650; margin: 2px 0; font-variant-numeric: tabular-nums; }
+.kpi .delta { font-size: 12px; color: var(--text-2); }
+.delta .up { color: var(--good); } .delta .down { color: var(--bad); }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; }
+.grid2 .card { margin-bottom: 0; }
+.chart { position: relative; width: 100%; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--text-2); margin-bottom: 6px; }
+.legend button { border: 0; background: none; padding: 2px 0; min-height: 0; display: inline-flex; align-items: center; gap: 6px; color: var(--text-2); }
+.legend button[aria-pressed="false"] { opacity: .4; text-decoration: line-through; }
+.sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.tip { position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 12px; box-shadow: 0 4px 16px rgba(0,0,0,.15); white-space: nowrap; z-index: 3; display: none; }
+.tip b { display: block; margin-bottom: 2px; }
+.tip .row { display: flex; gap: 8px; align-items: center; justify-content: space-between; }
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+th, td { padding: 7px 8px; border-bottom: 1px solid var(--grid); text-align: left; white-space: nowrap; }
+th { font-weight: 600; color: var(--text-2); cursor: pointer; user-select: none; position: sticky; top: 0; background: var(--surface); }
+th[aria-sort="ascending"]::after { content: " ▲"; font-size: 10px; }
+th[aria-sort="descending"]::after { content: " ▼"; font-size: 10px; }
+td.num, th.num { text-align: right; }
+tr.low td { background: var(--warn-bg); }
+.badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; padding: 1px 7px; border-radius: 999px; }
+.badge.warn { color: var(--warn); border: 1px solid currentColor; }
+.badge.ok { color: var(--good); border: 1px solid currentColor; }
+.bar-cell { display: flex; align-items: center; gap: 8px; min-width: 140px; }
+.bar-cell span.b { height: 10px; border-radius: 0 4px 4px 0; display: inline-block; }
+.empty { padding: 24px; text-align: center; color: var(--muted); }
+.notice { background: var(--warn-bg); border: 1px solid var(--warn); color: var(--text); border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; font-size: 14px; }
+.ledger-tools { display: flex; flex-wrap: wrap; gap: 8px; }
+.ledger-scroll { max-height: 520px; overflow: auto; }
+footer { color: var(--muted); font-size: 12px; padding: 8px 0 24px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: space-between; }
+a { color: var(--accent); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+@media (max-width: 600px) { .kpi .value { font-size: 20px; } .filters { position: static; } .grid2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Wiper blades & spark plugs</h1>
+      <div class="sub">Sales &amp; inventory · U01 Wiper blade · U02 Spark plugs</div>
+    </div>
+    <div class="sub" id="asOf">Loading…</div>
+  </header>
+
+  <div class="filters" role="search">
+    <label for="fPreset">Period
+      <select id="fPreset">
+        <option value="today">Today</option>
+        <option value="7">Last 7 days</option>
+        <option value="30" selected>Last 30 days</option>
+        <option value="month">This month</option>
+        <option value="lastmonth">Last month</option>
+        <option value="ytd">Year to date</option>
+        <option value="custom">Custom</option>
+      </select>
+    </label>
+    <label for="fFrom">From <input type="date" id="fFrom"></label>
+    <label for="fTo">To <input type="date" id="fTo"></label>
+    <label for="fSku">Product
+      <select id="fSku"><option value="">Both</option><option value="U01">U01 Wiper blade</option><option value="U02">U02 Spark plugs</option></select>
+    </label>
+    <label for="fVar">Variation <select id="fVar"><option value="">All</option></select></label>
+    <label for="fBucket">Group by
+      <select id="fBucket"><option value="">Auto</option><option value="day">Day</option><option value="week">Week</option><option value="month">Month</option></select>
+    </label>
+    <button id="themeBtn" type="button" title="Switch light / dark">◐ Theme</button>
+  </div>
+
+  <div id="notice"></div>
+  <section class="kpis" id="kpis" aria-label="Key figures"></section>
+
+  <section class="card">
+    <div class="card-head">
+      <div><h2>Sales trend</h2><div class="sub" id="trendSub"></div></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <div class="seg" role="group" aria-label="Metric">
+          <button type="button" id="mRevenue" aria-pressed="true">Revenue</button>
+          <button type="button" id="mUnits" aria-pressed="false">Units</button>
+        </div>
+        <button type="button" class="small" id="trendTableBtn">Table</button>
+        <button type="button" class="small" id="trendCsv">CSV</button>
+      </div>
+    </div>
+    <div class="legend" id="trendLegend"></div>
+    <div class="chart" id="trendChart"></div>
+    <div class="table-wrap" id="trendTable" hidden></div>
+  </section>
+
+  <div class="grid2">
+    <section class="card">
+      <div class="card-head"><div><h2>Sales by variation</h2><div class="sub">Selected period</div></div><button type="button" class="small" id="varCsv">CSV</button></div>
+      <div class="table-wrap" id="varTable"></div>
+    </section>
+    <section class="card">
+      <div class="card-head"><div><h2>Top customers</h2><div class="sub">Top 10 by revenue</div></div><button type="button" class="small" id="custCsv">CSV</button></div>
+      <div class="table-wrap" id="custTable"></div>
+    </section>
+  </div>
+  <div style="height:16px"></div>
+
+  <section class="card">
+    <div class="card-head"><div><h2>Sales by discount tier</h2><div class="sub" id="tierSub">Orders grouped by order total</div></div><button type="button" class="small" id="tierCsv">CSV</button></div>
+    <div class="table-wrap" id="tierTable"></div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <div><h2>Stock on hand &amp; reorder</h2><div class="sub">As of today · days of cover uses the faster of the 7- and 28-day sales rates · suggestion covers 60 days, in whole packs</div></div>
+      <button type="button" class="small" id="stockCsv">CSV</button>
+    </div>
+    <div class="table-wrap" id="stockTable"></div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <div><h2>Stock movements</h2><div class="sub" id="ledgerSub"></div></div>
+      <div class="ledger-tools">
+        <label for="lType" class="sr">Movement type</label>
+        <select id="lType"><option value="">All types</option><option value="sale">Sales</option><option value="receipt">Receipts</option><option value="adjustment">Adjustments</option><option value="transfer">Transfers</option><option value="opening">Opening</option></select>
+        <label for="lSearch" class="sr">Search</label>
+        <input id="lSearch" type="search" placeholder="Search customer / code">
+        <button type="button" class="small" id="ledgerCsv">CSV</button>
+      </div>
+    </div>
+    <div class="table-wrap ledger-scroll" id="ledgerTable"></div>
+  </section>
+
+  <footer>
+    <span>Money in GHS. Quantities are pieces (blades / plugs). Balance = running stock for that variation.</span>
+    <a href="admin.html">Admin</a>
+  </footer>
+</div>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ghs = p => 'GHS ' + (p / 100).toLocaleString('en-GH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const ghs0 = p => 'GHS ' + Math.round(p / 100).toLocaleString('en-GH');
+const num = n => Number(n).toLocaleString('en-GH');
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const PRODUCTS = {U01: {name: 'U01 Wiper blade', color: '--s1'}, U02: {name: 'U02 Spark plugs', color: '--s2'}};
+const TYPE_LABEL = {sale: 'Sale', receipt: 'Receipt', adjustment: 'Adjustment', transfer: 'Transfer', opening: 'Opening'};
+let data = null, metric = 'revenue', hidden = {}, showTrendTable = false;
+
+// ---- theme ----
+try { const t = localStorage.getItem('wiper_theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+$('themeBtn').onclick = () => {
+  const dark = document.documentElement.dataset.theme ? document.documentElement.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  document.documentElement.dataset.theme = dark ? 'light' : 'dark';
+  try { localStorage.setItem('wiper_theme', document.documentElement.dataset.theme); } catch (e) {}
+  if (data) render();
+};
+
+// ---- filters ----
+const iso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+function applyPreset() {
+  const p = $('fPreset').value, t = new Date(); let f = new Date(t), to = new Date(t);
+  if (p === 'custom') return;
+  if (p === 'today') {}
+  else if (p === '7' || p === '30') f.setDate(t.getDate() - (+p - 1));
+  else if (p === 'month') f = new Date(t.getFullYear(), t.getMonth(), 1);
+  else if (p === 'lastmonth') { f = new Date(t.getFullYear(), t.getMonth() - 1, 1); to = new Date(t.getFullYear(), t.getMonth(), 0); }
+  else if (p === 'ytd') f = new Date(t.getFullYear(), 0, 1);
+  $('fFrom').value = iso(f); $('fTo').value = iso(to);
+}
+$('fPreset').onchange = () => { applyPreset(); load(); };
+['fFrom', 'fTo'].forEach(id => $(id).onchange = () => { $('fPreset').value = 'custom'; load(); });
+$('fSku').onchange = () => { $('fVar').value = ''; fillVariations(); load(); };
+$('fVar').onchange = load; $('fBucket').onchange = load;
+$('mRevenue').onclick = () => setMetric('revenue'); $('mUnits').onclick = () => setMetric('units');
+function setMetric(m) { metric = m; $('mRevenue').setAttribute('aria-pressed', m === 'revenue'); $('mUnits').setAttribute('aria-pressed', m === 'units'); renderTrend(); }
+$('trendTableBtn').onclick = () => { showTrendTable = !showTrendTable; $('trendTable').hidden = !showTrendTable; $('trendTableBtn').textContent = showTrendTable ? 'Hide table' : 'Table'; };
+$('lType').onchange = renderLedger; $('lSearch').oninput = renderLedger;
+
+function fillVariations() {
+  if (!data) return;
+  const cur = $('fVar').value, sku = $('fSku').value;
+  $('fVar').innerHTML = '<option value="">All</option>' + data.variations.filter(v => !sku || v.sku === sku)
+    .map(v => `<option value="${esc(v.code)}">${esc(v.code)} · ${esc(v.packaging)}</option>`).join('');
+  $('fVar').value = cur;
+}
+
+async function load() {
+  const q = new URLSearchParams({action: 'report', from: $('fFrom').value, to: $('fTo').value, sku: $('fSku').value, var: $('fVar').value, bucket: $('fBucket').value});
+  try {
+    const r = await fetch('api.php?' + q); const j = await r.json();
+    if (!j.ok) throw new Error(j.error || 'Failed');
+    data = j; fillVariations(); render();
+  } catch (e) { $('asOf').textContent = 'Could not load data: ' + e.message; }
+}
+
+// ---- rendering ----
+function render() {
+  const d = data;
+  $('asOf').textContent = d.data_updated_at ? 'Data as of ' + new Date(d.data_updated_at).toLocaleString('en-GB', {dateStyle: 'medium', timeStyle: 'short'}) : 'No data loaded yet';
+  $('notice').innerHTML = d.variations.length ? '' : '<div class="notice">No products or stock have been loaded yet. An admin needs to load the opening stock from the Admin page.</div>';
+  renderKpis(); renderTrend(); renderVar(); renderCust(); renderTiers(); renderStock(); renderLedger();
+}
+
+function delta(cur, prev) {
+  if (!prev) return cur ? '<span class="muted">no sales in previous period</span>' : '<span class="muted">—</span>';
+  const p = (cur - prev) / Math.abs(prev) * 100, up = p >= 0;
+  return `<span class="${up ? 'up' : 'down'}">${up ? '▲' : '▼'} ${Math.abs(p).toFixed(1)}%</span> vs previous ${data.range.days} d`;
+}
+function renderKpis() {
+  const c = data.kpis.current, p = data.kpis.previous, s = data.kpis.stock;
+  const marginPct = c.revenue ? ` (${(c.margin / c.revenue * 100).toFixed(0)}%)` : '';
+  const tiles = [
+    ['Revenue', ghs0(c.revenue), delta(c.revenue, p.revenue)],
+    ['Units sold', num(c.units), delta(c.units, p.units)],
+    ['Gross margin', ghs0(c.margin), delta(c.margin, p.margin) + '<br>' + esc(marginPct.trim())],
+    ['Orders', num(c.orders), delta(c.orders, p.orders)],
+    ['Stock on hand', num(s.pieces) + ' pcs', '<span class="muted">today, selected products</span>'],
+    ['Stock value at cost', ghs0(s.value_cost), '<span class="muted">today</span>'],
+    ['Stock value at retail', ghs0(s.value_retail), '<span class="muted">today</span>'],
+  ];
+  $('kpis').innerHTML = tiles.map(([l, v, dl]) => `<div class="kpi"><div class="label">${l}</div><div class="value">${v}</div><div class="delta">${dl}</div></div>`).join('');
+}
+
+function niceMax(v) {
+  if (v <= 0) return metric === 'revenue' ? 100 : 1;
+  const e = Math.pow(10, Math.floor(Math.log10(v))), f = v / e;
+  return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * e;
+}
+function fmtMetric(v) { return metric === 'revenue' ? ghs0(v) : num(v); }
+function fmtAxis(v) {
+  const x = metric === 'revenue' ? v / 100 : v;
+  const s = x >= 1e6 ? (x / 1e6).toFixed(x % 1e6 ? 1 : 0) + 'M' : x >= 1e3 ? (x / 1e3).toFixed(x % 1e3 ? 1 : 0) + 'k' : String(Math.round(x));
+  return s;
+}
+function activeSkus() { return ['U01', 'U02'].filter(s => (!data.filter.sku || data.filter.sku === s)); }
+
+function renderTrend() {
+  const b = data.series.buckets, skus = activeSkus(), P = data.series.products;
+  $('trendSub').textContent = `${data.range.from} to ${data.range.to} · by ${data.range.bucket} · ${metric === 'revenue' ? 'GHS' : 'pieces'}`;
+  $('trendLegend').innerHTML = skus.length > 1 ? skus.map(s => `<button type="button" data-sku="${s}" aria-pressed="${!hidden[s]}"><span class="sw" style="background:var(${PRODUCTS[s].color})"></span>${PRODUCTS[s].name}</button>`).join('') : '';
+  $('trendLegend').querySelectorAll('button').forEach(btn => btn.onclick = () => { hidden[btn.dataset.sku] = !hidden[btn.dataset.sku]; renderTrend(); });
+  const shown = skus.filter(s => !hidden[s]);
+  const totals = b.map((_, i) => shown.reduce((a, s) => a + P[s][metric][i], 0));
+  const el = $('trendChart');
+  const W = Math.max(300, el.clientWidth || 600), H = W < 500 ? 220 : 280, m = {t: 12, r: 8, b: 28, l: 52};
+  const iw = W - m.l - m.r, ih = H - m.t - m.b, max = 4 * niceMax(Math.max(...totals, 0) / 4);
+  const step = iw / Math.max(1, b.length), bw = Math.max(2, Math.min(48, step * 0.66));
+  let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Sales trend chart">`;
+  for (let k = 0; k <= 4; k++) {
+    const y = m.t + ih - ih * k / 4;
+    svg += `<line x1="${m.l}" x2="${W - m.r}" y1="${y}" y2="${y}" stroke="${css('--grid')}" stroke-width="1"/>`;
+    svg += `<text x="${m.l - 6}" y="${y + 4}" text-anchor="end" font-size="11" fill="${css('--muted')}">${fmtAxis(max * k / 4)}</text>`;
+  }
+  const every = Math.ceil(b.length / Math.max(1, Math.floor(iw / 64)));
+  b.forEach((bk, i) => { svg += `<rect class="hl" data-i="${i}" x="${m.l + step * i}" y="${m.t}" width="${step}" height="${ih}" fill="transparent"/>`; });
+  b.forEach((bk, i) => {
+    const cx = m.l + step * i + step / 2;
+    let y0 = m.t + ih;
+    shown.forEach((s, si) => {
+      const v = P[s][metric][i]; if (!v) return;
+      const h = Math.max(1, v / max * ih), isTop = !shown.slice(si + 1).some(t => P[t][metric][i]);
+      const x = cx - bw / 2, y = y0 - h, r = isTop ? Math.min(4, bw / 2, h) : 0;
+      const gap = isTop ? 0 : 2;
+      svg += `<path d="M${x},${y0} V${y + r + gap} ${r ? `Q${x},${y + gap} ${x + r},${y + gap} H${x + bw - r} Q${x + bw},${y + gap} ${x + bw},${y + r + gap}` : `H${x + bw}`} V${y0} Z" fill="${css(PRODUCTS[s].color)}"/>`;
+      y0 = y;
+    });
+    if (i % every === 0) svg += `<text x="${cx}" y="${H - 8}" text-anchor="middle" font-size="11" fill="${css('--muted')}">${esc(bk.label)}</text>`;
+    svg += `<rect class="hit" data-i="${i}" x="${m.l + step * i}" y="${m.t}" width="${step}" height="${ih}" fill="transparent"/>`;
+  });
+  svg += `<line x1="${m.l}" x2="${W - m.r}" y1="${m.t + ih}" y2="${m.t + ih}" stroke="${css('--muted')}" stroke-width="1"/></svg><div class="tip" id="trendTip"></div>`;
+  el.innerHTML = totals.some(v => v) ? svg : '<div class="empty">No sales in this period.</div>';
+  const tip = $('trendTip');
+  el.querySelectorAll('.hit').forEach(r => {
+    const show = ev => {
+      const i = +r.dataset.i;
+      tip.innerHTML = `<b>${esc(b[i].label)}</b>` + shown.map(s => `<div class="row"><span><span class="sw" style="background:var(${PRODUCTS[s].color})"></span> ${PRODUCTS[s].name}</span><span>${fmtMetric(P[s][metric][i])}</span></div>`).join('')
+        + (shown.length > 1 ? `<div class="row"><span>Total</span><b style="display:inline">${fmtMetric(totals[i])}</b></div>` : '');
+      tip.style.display = 'block';
+      const box = el.getBoundingClientRect(), x = (ev.clientX ?? box.left) - box.left;
+      tip.style.left = Math.min(Math.max(0, x + 12), box.width - tip.offsetWidth) + 'px'; tip.style.top = '8px';
+      el.querySelector(`.hl[data-i="${i}"]`).setAttribute('fill', css('--grid'));
+    };
+    r.addEventListener('mousemove', show); r.addEventListener('click', show);
+    r.addEventListener('mouseleave', () => { tip.style.display = 'none'; el.querySelector(`.hl[data-i="${r.dataset.i}"]`).setAttribute('fill', 'transparent'); });
+  });
+  // table view
+  const cols = [{k: 'label', t: 'Period'}, ...skus.flatMap(s => [{k: s + 'r', t: s + ' revenue', f: ghs, n: 1}, {k: s + 'u', t: s + ' units', f: num, n: 1}]), {k: 'tr', t: 'Total revenue', f: ghs, n: 1}];
+  const rows = b.map((bk, i) => { const o = {label: bk.label, tr: 0}; skus.forEach(s => { o[s + 'r'] = P[s].revenue[i]; o[s + 'u'] = P[s].units[i]; o.tr += P[s].revenue[i]; }); return o; });
+  table('trendTable', cols, rows, null, 'trendCsv', 'sales-trend');
+}
+
+function barCell(v, max, color) {
+  const w = max ? Math.max(2, v / max * 100) : 0;
+  return `<div class="bar-cell"><span class="b" style="width:${w}px;background:var(${color})"></span><span>${ghs(v)}</span></div>`;
+}
+function renderVar() {
+  const rows = data.by_variation, max = Math.max(0, ...rows.map(r => r.revenue));
+  table('varTable', [
+    {k: 'code', t: 'Code'}, {k: 'packaging', t: 'Packaging'},
+    {k: 'units', t: 'Units', f: num, n: 1},
+    {k: 'revenue', t: 'Revenue', html: r => barCell(r.revenue, max, PRODUCTS[r.sku].color), csv: r => (r.revenue / 100).toFixed(2)},
+  ], rows, 'No sales in this period.', 'varCsv', 'sales-by-variation');
+}
+function renderCust() {
+  const rows = data.customers, max = Math.max(0, ...rows.map(r => r.revenue));
+  table('custTable', [
+    {k: 'customer', t: 'Customer'}, {k: 'orders', t: 'Orders', f: num, n: 1}, {k: 'units', t: 'Units', f: num, n: 1},
+    {k: 'revenue', t: 'Revenue', html: r => barCell(r.revenue, max, '--accent'), csv: r => (r.revenue / 100).toFixed(2)},
+  ], rows, 'No sales in this period.', 'custCsv', 'top-customers');
+}
+function renderTiers() {
+  const rows = data.tiers, total = rows.reduce((a, r) => a + r.revenue, 0), max = Math.max(0, ...rows.map(r => r.revenue));
+  rows.forEach(r => r.share = total ? r.revenue / total * 100 : 0);
+  table('tierTable', [
+    {k: 'label', t: 'Order size'}, {k: 'orders', t: 'Orders', f: num, n: 1},
+    {k: 'revenue', t: 'Revenue', html: r => barCell(r.revenue, max, '--accent'), csv: r => (r.revenue / 100).toFixed(2)},
+    {k: 'share', t: 'Share', f: v => v.toFixed(1) + '%', n: 1},
+  ], total ? rows : [], 'No sales in this period.', 'tierCsv', 'discount-tiers');
+}
+function renderStock() {
+  table('stockTable', [
+    {k: 'code', t: 'Code'}, {k: 'packaging', t: 'Packaging'},
+    {k: 'low', t: 'Status', html: r => r.low ? '<span class="badge warn">⚠ Low</span>' : '<span class="badge ok">✓ OK</span>', csv: r => r.low ? 'Low' : 'OK'},
+    {k: 'on_hand', t: 'On hand (pcs)', f: num, n: 1}, {k: 'packs', t: 'Full packs', f: num, n: 1},
+    {k: 'avg7', t: 'Avg/day 7d', f: v => v.toFixed(1), n: 1}, {k: 'avg28', t: 'Avg/day 28d', f: v => v.toFixed(1), n: 1},
+    {k: 'days_cover', t: 'Days of cover', f: v => v === null ? 'no recent sales' : v.toFixed(0), n: 1},
+    {k: 'stockout', t: 'Projected stockout', f: v => v ?? '—'},
+    {k: 'reorder_level', t: 'Reorder level', f: num, n: 1},
+    {k: 'suggest_packs', t: 'Suggested reorder (pcs)', html: r => r.suggest_packs ? `${num(r.suggest_packs)} packs (${num(r.suggest_pieces)} pcs)` : '—', csv: r => r.suggest_pieces},
+    {k: 'value_cost', t: 'Value at cost', f: ghs, n: 1}, {k: 'value_retail', t: 'Value at retail', f: ghs, n: 1},
+  ], data.stock, 'No stock loaded yet.', 'stockCsv', 'stock-on-hand', r => r.low ? 'low' : '');
+}
+function renderLedger() {
+  const type = $('lType').value, q = $('lSearch').value.trim().toLowerCase();
+  const rows = data.ledger.filter(r => (!type || r.type === type) && (!q || (r.customer + ' ' + r.code + ' ' + r.sku).toLowerCase().includes(q)));
+  $('ledgerSub').textContent = `${num(rows.length)} shown of ${num(data.ledger_total)} in ${data.range.from} to ${data.range.to}` + (data.ledger_total > data.ledger.length ? ' (latest 1,000 loaded; narrow the dates for older ones)' : '');
+  table('ledgerTable', [
+    {k: 'date', t: 'Date'}, {k: 'code', t: 'Code'}, {k: 'type', t: 'Type', f: v => TYPE_LABEL[v] || v},
+    {k: 'qty', t: 'Qty (pcs)', f: v => (v > 0 ? '+' : '') + num(v), n: 1},
+    {k: 'unit_price', t: 'Unit price', f: v => v ? ghs(v) : '', n: 1, csv: r => (r.unit_price / 100).toFixed(2)}, {k: 'amount', t: 'Amount', f: v => v ? ghs(v) : '', n: 1, csv: r => (r.amount / 100).toFixed(2)},
+    {k: 'customer', t: 'Customer'}, {k: 'balance', t: 'Balance', f: num, n: 1},
+  ], rows, 'No movements in this period.', 'ledgerCsv', 'stock-movements');
+}
+
+// ---- sortable table + CSV ----
+const sortState = {};
+function table(id, cols, rows, emptyMsg, csvBtn, csvName, rowClass) {
+  const st = sortState[id];
+  let list = rows.slice();
+  if (st) {
+    const c = cols.find(c => c.k === st.k);
+    if (c) list.sort((a, b) => { const x = a[st.k], y = b[st.k]; return (x === y ? 0 : x === null ? 1 : y === null ? -1 : x < y ? -1 : 1) * st.dir; });
+  }
+  const el = $(id);
+  if (!list.length) el.innerHTML = `<div class="empty">${esc(emptyMsg || 'No data.')}</div>`;
+  else el.innerHTML = '<table><thead><tr>' + cols.map(c => `<th data-k="${c.k}" class="${c.n ? 'num' : ''}" ${st && st.k === c.k ? `aria-sort="${st.dir > 0 ? 'ascending' : 'descending'}"` : ''} scope="col">${esc(c.t)}</th>`).join('') + '</tr></thead><tbody>'
+    + list.map(r => `<tr class="${rowClass ? rowClass(r) : ''}">` + cols.map(c => `<td class="${c.n ? 'num' : ''}">${c.html ? c.html(r) : esc(c.f ? c.f(r[c.k]) : r[c.k])}</td>`).join('') + '</tr>').join('') + '</tbody></table>';
+  el.querySelectorAll('th').forEach(th => th.onclick = () => {
+    const k = th.dataset.k, cur = sortState[id];
+    sortState[id] = {k, dir: cur && cur.k === k ? -cur.dir : (typeof rows[0]?.[k] === 'number' ? -1 : 1)};
+    table(id, cols, rows, emptyMsg, csvBtn, csvName, rowClass);
+  });
+  if (csvBtn) $(csvBtn).onclick = () => downloadCsv(csvName, cols, list);
+}
+function downloadCsv(name, cols, rows) {
+  const cell = v => { const s = String(v ?? ''); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+  const money = c => c.f === ghs || c.csv;
+  const val = (c, r) => c.csv ? c.csv(r) : c.f === ghs ? (r[c.k] / 100).toFixed(2) : c.k === 'type' ? r[c.k] : r[c.k];
+  const head = cols.map(c => c.t + (money(c) && c.k !== 'low' && c.k !== 'suggest_packs' ? ' (GHS)' : ''));
+  const csv = [head, ...rows.map(r => cols.map(c => val(c, r)))].map(r => r.map(cell).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['﻿' + csv], {type: 'text/csv'}));
+  a.download = `${name}_${data.range.from}_${data.range.to}.csv`; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => data && renderTrend(), 150); });
+applyPreset(); load();
+setInterval(load, 5 * 60 * 1000);
+</script>
+</body>
+</html>

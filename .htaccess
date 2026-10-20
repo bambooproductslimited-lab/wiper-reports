@@ -1,0 +1,9 @@
+DirectoryIndex index.html index.php
+Options -Indexes
+<IfModule mod_headers.c>
+  Header always set X-Robots-Tag "noindex, nofollow"
+  Header always set X-Content-Type-Options "nosniff"
+</IfModule>
+<FilesMatch "\.(sqlite|key|json|md)$">
+  Require all denied
+</FilesMatch>
