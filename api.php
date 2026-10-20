@@ -2,7 +2,7 @@
 // wiper.chou.net API.
 // Public (no login, read-only): health, report.
 // Admin (X-Session token from login): status, setup, login, logout, catalog, seed_preview, seed_load,
-//   import (CSV or .xlsx, all-or-nothing, dry_run supported), add_movement, void_movement, batches, undo_batch,
+//   import (CSV or .xlsx; template or shop sales-report layout; all-or-nothing, dry_run supported), add_movement, void_movement, batches, undo_batch,
 //   save_variation, save_tiers.
 // Quantities are pieces. Sales are stored as negative qty with a positive amount_pesewas.
 
@@ -202,9 +202,9 @@ function lookup(): array {
     return [$byCode, $bySku];
 }
 function insert_movements(array $rows, string $source, ?int $batch): void {
-    $s = db()->prepare('INSERT INTO movements (date, variation_id, type, qty, unit_price_pesewas, amount_pesewas, cost_pesewas, customer, order_ref, note, source, batch_id, created_at)
-        VALUES (:date, :variation_id, :type, :qty, :unit_price_pesewas, :amount_pesewas, :cost_pesewas, :customer, :order_ref, :note, :source, :batch_id, :created_at)');
-    foreach ($rows as $r) $s->execute($r + ['source' => $source, 'batch_id' => $batch, 'created_at' => now()]);
+    $s = db()->prepare('INSERT INTO movements (date, variation_id, type, qty, unit_price_pesewas, amount_pesewas, discount_pesewas, cost_pesewas, customer, order_ref, note, source, batch_id, created_at)
+        VALUES (:date, :variation_id, :type, :qty, :unit_price_pesewas, :amount_pesewas, :discount_pesewas, :cost_pesewas, :customer, :order_ref, :note, :source, :batch_id, :created_at)');
+    foreach ($rows as $r) $s->execute($r + ['discount_pesewas' => 0, 'source' => $source, 'batch_id' => $batch, 'created_at' => now()]);
 }
 function add_movement(array $in): never {
     [$byCode, $bySku] = lookup();
@@ -225,21 +225,27 @@ function undo_batch(array $in): never {
     if (!$batch) fail('Batch not found or already undone.', 404);
     $pdo->beginTransaction();
     $pdo->prepare('UPDATE movements SET voided = 1 WHERE batch_id = ?')->execute([$id]);
+    // Bring back the rows this upload replaced (unless their own upload was undone since).
+    $pdo->prepare('UPDATE movements SET voided = 0, replaced_by = NULL WHERE replaced_by = ? AND batch_id IN (SELECT id FROM batches WHERE undone = 0)')->execute([$id]);
     $pdo->prepare('UPDATE batches SET undone = 1 WHERE id = ?')->execute([$id]);
     $pdo->commit();
     if ($batch['kind'] === 'seed') $pdo->prepare("DELETE FROM meta WHERE k = 'seed_loaded_at'")->execute();
     touch_data(); out(['ok' => true]);
 }
 
-// Upload columns: date, sku, variation, type, qty, unit_price, customer, note, order_ref (header row required, any order).
-// Body: {csv: "<text>"} or {xlsx: "<base64 of an .xlsx file>"} (first sheet is read), plus label, dry_run.
-function upload_records(array $in): array {
+// Two upload layouts are accepted, per sheet (CSV = one sheet):
+// 1. Template: date, sku, variation, type, qty, unit_price, customer, note, order_ref. Rows are added.
+// 2. Sales report, as kept by the shop: one sheet per product named like "Wiper Blade" / "Spark Plug", columns
+//    Date, Product (packaging, e.g. Loose, Brown box), Quantity (packs), Unit Price (GHS, per pack),
+//    Sales Amount (GHS), Discount (GHS); optional Customer, Note. The report is a running list, so an upload
+//    replaces earlier report rows for that product in the dates it covers instead of adding to them.
+// Sheets matching neither layout (e.g. a pivot "Summary") are skipped. Body: {csv} or {xlsx: base64}, label, dry_run.
+function upload_sheets(array $in): array {
     if (!empty($in['xlsx'])) {
         $bytes = base64_decode((string)$in['xlsx'], true);
         if ($bytes === false) fail('Could not read the Excel file.');
         if (strlen($bytes) > 5_000_000) fail('File too large (max 5 MB).');
-        try { $recs = xlsx_rows($bytes); } catch (RuntimeException $e) { fail($e->getMessage()); }
-        return $recs;
+        try { return xlsx_sheets($bytes); } catch (RuntimeException $e) { fail($e->getMessage()); }
     }
     $csv = (string)($in['csv'] ?? '');
     if (trim($csv) === '') fail('The file is empty.');
@@ -249,40 +255,117 @@ function upload_records(array $in): array {
     $recs = [];
     while (($rec = fgetcsv($fh, null, ',', '"', '')) !== false) $recs[] = $rec;
     fclose($fh);
-    return $recs;
+    return [['name' => '', 'rows' => $recs]];
+}
+function norm_key(string $s): string { return trim(preg_replace('/[^a-z0-9]+/', '_', strtolower(trim($s))), '_'); }
+// Header cell -> field name for either layout.
+function header_field(string $h): string {
+    $k = norm_key(preg_replace('/\(.*?\)/', '', $h)); // "Unit Price (GHS)" -> unit_price
+    return match ($k) {
+        'quantity', 'qty' => 'qty',
+        'sales_amount', 'amount', 'total', 'sales' => 'amount',
+        'discount' => 'discount',
+        'unit_price', 'price' => 'unit_price',
+        'product', 'item', 'packaging' => 'product',
+        default => $k,
+    };
+}
+function sheet_sku(string $name): string {
+    $n = strtolower($name);
+    return str_contains($n, 'wiper') ? 'U01' : (str_contains($n, 'spark') || str_contains($n, 'plug') ? 'U02' : '');
+}
+// "Brown box" / "Loose" / "Bundles" -> variation, matched on code or the start of the packaging name.
+function match_variation(string $product, array $vars): array {
+    $p = norm_key($product);
+    if ($p === '') return [null, 'product is empty'];
+    $p1 = preg_replace('/s$/', '', $p);
+    $hits = [];
+    foreach ($vars as $v) {
+        $head = norm_key(preg_replace('/\(.*$/', '', $v['packaging']));
+        if ($p === norm_key($v['code']) || $head === $p || $head === $p1 || str_starts_with($head, $p1 . '_') || str_starts_with($head . '_', $p1 . '_')) $hits[$v['code']] = $v;
+    }
+    if (count($hits) === 1) return [reset($hits), null];
+    $names = implode(', ', array_map(fn($v) => preg_replace('/\s*\(.*$/', '', $v['packaging']), $vars));
+    return [null, count($hits) ? "product \"{$product}\" matches several packagings (" . implode(', ', array_keys($hits)) . ')' : "unknown product \"{$product}\" (use one of: {$names})"];
+}
+function build_report_movement(array $r, array $vars): array {
+    $date = to_date($r['date'] ?? '');
+    if (!$date) return [null, 'date must be a date cell, YYYY-MM-DD or DD/MM/YYYY'];
+    if ($date > date('Y-m-d')) return [null, 'date is in the future'];
+    [$v, $err] = match_variation((string)($r['product'] ?? ''), $vars);
+    if ($err) return [null, $err];
+    $q = trim(str_replace(',', '', (string)($r['qty'] ?? '')));
+    if (!preg_match('/^\d+$/', $q) || (int)$q === 0) return [null, 'Quantity must be a whole number above 0'];
+    $packs = (int)$q; $ppp = max(1, (int)$v['pieces_per_pack']); $pieces = $packs * $ppp;
+    $unit = to_pesewas($r['unit_price'] ?? '');
+    $gross = trim((string)($r['amount'] ?? '')) === '' ? ($unit ?? 0) * $packs : to_pesewas($r['amount']);
+    $disc = to_pesewas($r['discount'] ?? '');
+    if ($unit === null || $unit < 0) return [null, 'Unit Price must be an amount in GHS'];
+    if ($gross === null || $gross < 0) return [null, 'Sales Amount must be an amount in GHS'];
+    if ($disc === null || $disc < 0 || $disc > $gross) return [null, 'Discount must be an amount between 0 and the Sales Amount'];
+    $net = $gross - $disc;
+    return [[
+        'date' => $date, 'variation_id' => (int)$v['id'], 'type' => 'sale', 'qty' => -$pieces,
+        'unit_price_pesewas' => (int)round($net / $pieces), 'amount_pesewas' => $net, 'discount_pesewas' => $disc,
+        'cost_pesewas' => (int)$v['cost_pesewas'],
+        'customer' => mb_substr(trim((string)($r['customer'] ?? '')), 0, 120),
+        'order_ref' => mb_substr(trim((string)($r['order_ref'] ?? '')), 0, 60),
+        'note' => mb_substr(trim((string)($r['note'] ?? '')), 0, 300),
+        'sku' => $v['sku'],
+    ], null];
 }
 function import_csv(array $in): never {
-    $recs = upload_records($in);
-    // Skip blank rows above the header.
-    $skipped = 0;
-    while ($recs && count(array_filter($recs[0], fn($c) => trim((string)$c) !== '')) === 0) { array_shift($recs); $skipped++; }
-    $header = array_shift($recs);
-    if (!$header) fail('Missing header row.');
-    $cols = array_map(fn($h) => strtolower(trim(str_replace(' ', '_', (string)$h))), $header);
-    foreach (['date', 'sku', 'type', 'qty'] as $req) if (!in_array($req, $cols, true)) fail("Missing column \"{$req}\". Expected: date, sku, variation, type, qty, unit_price, customer, note, order_ref.");
     [$byCode, $bySku] = lookup();
-    $rows = []; $errors = []; $line = $skipped + 1; // spreadsheet row number of the header
-    foreach ($recs as $rec) {
-        $line++;
-        if (count(array_filter($rec, fn($c) => trim((string)$c) !== '')) === 0) continue;
-        $r = [];
-        foreach ($cols as $i => $c) $r[$c] = $rec[$i] ?? '';
-        [$row, $err] = build_movement($r, $byCode, $bySku);
-        if ($err) { $errors[] = ['line' => $line, 'error' => $err]; if (count($errors) >= 200) break; }
-        else $rows[] = $row;
+    $append = []; $report = []; $errors = []; $used = []; $skippedSheets = [];
+    foreach (upload_sheets($in) as $sheet) {
+        $recs = $sheet['rows']; $label = $sheet['name'] !== '' ? "{$sheet['name']}, " : '';
+        $line = 0;
+        while ($recs && count(array_filter($recs[0], fn($c) => trim((string)$c) !== '')) === 0) { array_shift($recs); $line++; }
+        $header = array_shift($recs); $line++;
+        if (!$header) { if ($sheet['name'] !== '') $skippedSheets[] = $sheet['name']; continue; }
+        $cols = array_map(fn($h) => header_field((string)$h), $header);
+        $isTemplate = !array_diff(['date', 'sku', 'type', 'qty'], $cols);
+        $isReport = !$isTemplate && !array_diff(['date', 'product', 'qty'], $cols);
+        if (!$isTemplate && !$isReport) { $skippedSheets[] = $sheet['name'] !== '' ? $sheet['name'] : 'CSV'; continue; }
+        $vars = array_merge(...array_values($bySku ?: [[]]));
+        if ($isReport && ($sku = sheet_sku($sheet['name']))) $vars = array_values($bySku[$sku] ?? []);
+        if ($isReport && !$vars) { $errors[] = ['line' => $line, 'error' => "{$label}no variations loaded for this product yet (load the opening stock first)"]; continue; }
+        $used[] = ($sheet['name'] !== '' ? $sheet['name'] : 'CSV') . ($isReport ? ' (sales report)' : ' (template)');
+        foreach ($recs as $rec) {
+            $line++;
+            if (count(array_filter($rec, fn($c) => trim((string)$c) !== '')) === 0) continue;
+            $r = [];
+            foreach ($cols as $i => $c) if ($c !== '' && !isset($r[$c])) $r[$c] = $rec[$i] ?? '';
+            [$row, $err] = $isReport ? build_report_movement($r, $vars) : build_movement($r, $byCode, $bySku);
+            if ($err) { $errors[] = ['line' => $line, 'error' => $label . $err]; if (count($errors) >= 200) break 2; }
+            elseif ($isReport) $report[] = $row;
+            else $append[] = $row;
+        }
     }
     if ($errors) fail('Nothing was imported. Fix these rows and try again.', 422, ['errors' => $errors]);
-    if (!$rows) fail('No data rows found.');
-    $summary = ['rows' => count($rows),
-        'sales_pieces' => -array_sum(array_map(fn($r) => $r['type'] === 'sale' ? $r['qty'] : 0, $rows)),
-        'revenue_pesewas' => array_sum(array_column($rows, 'amount_pesewas')),
-        'from' => min(array_column($rows, 'date')), 'to' => max(array_column($rows, 'date'))];
+    $all = array_merge($append, $report);
+    if (!$all) fail('No data rows found.' . ($skippedSheets ? ' Sheets skipped (columns not recognised): ' . implode(', ', $skippedSheets) . '.' : '') . ' Expected Date, Product, Quantity, Unit Price, Sales Amount — or the template columns.');
+
+    // Report rows replace earlier report rows for the same product inside the dates this upload covers.
+    $pdo = db(); $ranges = [];
+    foreach ($report as $r) { $k = $r['sku']; $ranges[$k] = [min($ranges[$k][0] ?? $r['date'], $r['date']), max($ranges[$k][1] ?? $r['date'], $r['date'])]; }
+    $replaceSql = "FROM movements WHERE source = 'report' AND voided = 0 AND date BETWEEN ? AND ? AND variation_id IN (SELECT id FROM variations WHERE sku = ?)";
+    $replaced = 0;
+    foreach ($ranges as $sku => [$f, $t]) { $c = $pdo->prepare("SELECT COUNT(*) $replaceSql"); $c->execute([$f, $t, $sku]); $replaced += (int)$c->fetchColumn(); }
+    $summary = ['rows' => count($all),
+        'sales_pieces' => -array_sum(array_map(fn($r) => $r['type'] === 'sale' ? $r['qty'] : 0, $all)),
+        'revenue_pesewas' => array_sum(array_column($all, 'amount_pesewas')),
+        'discount_pesewas' => array_sum(array_map(fn($r) => $r['discount_pesewas'] ?? 0, $all)),
+        'from' => min(array_column($all, 'date')), 'to' => max(array_column($all, 'date')),
+        'replaces' => $replaced, 'sheets' => $used, 'skipped_sheets' => $skippedSheets];
     if (!empty($in['dry_run'])) out(['ok' => true, 'dry_run' => true, 'summary' => $summary]);
-    $pdo = db(); $pdo->beginTransaction();
+    $pdo->beginTransaction();
     $label = mb_substr(trim((string)($in['label'] ?? 'Upload')), 0, 120);
-    $pdo->prepare('INSERT INTO batches (kind, label, rows, created_at) VALUES (?,?,?,?)')->execute(['import', $label, count($rows), now()]);
+    $pdo->prepare('INSERT INTO batches (kind, label, rows, created_at) VALUES (?,?,?,?)')->execute([$report ? 'report' : 'import', $label, count($all), now()]);
     $batch = (int)$pdo->lastInsertId();
-    insert_movements($rows, 'import', $batch);
+    foreach ($ranges as $sku => [$f, $t]) $pdo->prepare("UPDATE movements SET voided = 1, replaced_by = ? WHERE id IN (SELECT id $replaceSql)")->execute([$batch, $f, $t, $sku]);
+    insert_movements($append, 'import', $batch);
+    insert_movements(array_map(function ($r) { unset($r['sku']); return $r; }, $report), 'report', $batch);
     $pdo->commit(); touch_data();
     out(['ok' => true, 'batch_id' => $batch, 'summary' => $summary]);
 }

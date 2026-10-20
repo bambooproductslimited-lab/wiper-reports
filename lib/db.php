@@ -72,6 +72,15 @@ function migrate(PDO $pdo): void {
             PRAGMA user_version = 1;
         ");
     }
+    if ($v < 2) {
+        // replaced_by: the upload batch that superseded this row (sales-report re-uploads replace their date range).
+        // discount_pesewas: discount on a sale; amount_pesewas is already net of it.
+        $pdo->exec("
+            ALTER TABLE movements ADD COLUMN replaced_by INTEGER;
+            ALTER TABLE movements ADD COLUMN discount_pesewas INTEGER NOT NULL DEFAULT 0;
+            PRAGMA user_version = 2;
+        ");
+    }
 }
 
 function now(): string { return date('c'); }

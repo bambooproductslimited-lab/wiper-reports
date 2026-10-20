@@ -75,7 +75,11 @@ a { color: var(--accent); }
 
     <section class="card">
       <h2>Upload sales &amp; stock (CSV or Excel)</h2>
-      <p class="sub">Excel (.xlsx, first sheet) or CSV. Columns (header row required, any order): <code>date, sku, variation, type, qty, unit_price, customer, note, order_ref</code>.<br>
+      <p class="sub"><b>Sales report:</b> upload the shop's sales report workbook as it is (e.g. <code>20261019_WB_SP_Sales_Report.xlsx</code>). Each sheet named like "Wiper Blade" or "Spark Plug" with columns
+        <code>Date, Product, Quantity, Unit Price (GHS), Sales Amount (GHS), Discount (GHS)</code> is read; Product is the packaging (Loose, Brown box, White box, White plastic, Blue box, Bundle; Box for spark plugs),
+        Quantity is in packs and is converted to pieces, and revenue is Sales Amount minus Discount. Other sheets (e.g. Summary) are skipped.
+        The report is a running list, so re-uploading it <b>replaces</b> that product's report rows for the dates it covers — nothing is counted twice.</p>
+      <p class="sub"><b>Template</b> (for deliveries, adjustments, transfers, or sales with customers): Excel (.xlsx) or CSV with columns (header row required, any order): <code>date, sku, variation, type, qty, unit_price, customer, note, order_ref</code>. These rows are added, not replaced.<br>
         <code>date</code> YYYY-MM-DD or DD/MM/YYYY · <code>sku</code> U01 or U02 · <code>variation</code> e.g. FG1 (can be blank when the product has only one) ·
         <code>type</code> sale, receipt, adjustment or transfer · <code>qty</code> whole pieces (sale/receipt positive; adjustment/transfer signed, e.g. −20) ·
         <code>unit_price</code> GHS per piece for sales (blank = retail price) · <code>order_ref</code> groups lines into one order for discount tiers.
@@ -145,7 +149,7 @@ a { color: var(--accent); }
     </section>
 
     <section class="card">
-      <h2>Imports</h2>
+      <h2>Uploads</h2>
       <div class="table-wrap" id="batchTable"></div>
       <div class="msg" id="batchMsg"></div>
     </section>
@@ -250,7 +254,11 @@ async function runImport(dry) {
     return;
   }
   const s = j.summary;
-  msg('csvMsg', `${dry ? 'File OK' : 'Imported'}: ${num(s.rows)} rows, ${s.from} to ${s.to}, ${num(s.sales_pieces)} pieces sold, revenue ${ghs(s.revenue_pesewas)}.` + (dry ? ' Press Import to save.' : ''), true);
+  msg('csvMsg', `${dry ? 'File OK' : 'Imported'}: ${num(s.rows)} rows from ${s.sheets.join(', ')}, ${s.from} to ${s.to}, ${num(s.sales_pieces)} pieces sold, revenue ${ghs(s.revenue_pesewas)}`
+    + (s.discount_pesewas ? ` (after ${ghs(s.discount_pesewas)} discount)` : '') + '.'
+    + (s.replaces ? ` ${dry ? 'Will replace' : 'Replaced'} ${num(s.replaces)} rows from an earlier upload of the report for the same dates.` : '')
+    + (s.skipped_sheets.length ? ` Skipped sheets: ${s.skipped_sheets.join(', ')}.` : '')
+    + (dry ? ' Press Import to save.' : ''), true);
   $('csvImport').disabled = !dry;
   if (!dry) { upload = null; $('csvFile').value = ''; loadBatches(); loadRecent(); }
 }
